@@ -20,9 +20,6 @@ export class UserEntity {
   @Column({name: "password", length: 150})
   password: string;
 
-  @Column({name:"role_id", type:"enum", enum: Roles,nullable:true, default:Roles.USER})
-  role: Roles
-
   //Security
 	@Column({ name: "reset_token", nullable: true, default: "" })
 	resetToken: string;
