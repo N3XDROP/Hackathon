@@ -1,6 +1,5 @@
 import { IsEmail, Length } from 'class-validator';
 import { Entity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert, BeforeUpdate } from 'typeorm';
-import { Roles } from '../utils/enums';
 import * as bcrypt from 'bcrypt';
 import { UserSchema } from './schema';
 
