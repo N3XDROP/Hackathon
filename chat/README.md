@@ -6,6 +6,12 @@
   `C:\Program Files\Tesseract-OCR\tesseract.exe`
 - (Opcional) GPU NVIDIA para acelerar EasyOCR.
 
+# Instalacion IA Ollama
+ollama pull llava:latest
+
+# Instalacion OCR Tesseract
+https://github.com/tesseract-ocr/tesseract/releases/download/5.5.0/tesseract-ocr-w64-setup-5.5.0.20241111.exe
+
 ## Instalación (CPU)
 pip install flask
 pip install flask-session
