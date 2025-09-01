@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.log
+
+# Entornos virtuales
+genai/
+venv/
+.venv/
+.env
+
+# Flask / Archivos temporales
+flask_session/
+uploads/
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Subir y analizar (IA)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            max-width: 880px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .msg {
+            background: #f2f7ff;
+            border: 1px solid #cfe2ff;
+            padding: 10px 12px;
+            border-radius: 8px;
+        }
+
+        .card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .muted {
+            color: #666;
+        }
+
+        code {
+            background: #fafafa;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        ul {
+            margin-top: 6px;
+        }
+
+        details {
+            margin-top: 16px;
+        }
+
+        summary {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Subida y análisis con IA (Ollama multimodal)</h1>
+
+    {% if mensaje %}
+    <p class="msg"><em>{{ mensaje }}</em></p>
+    {% endif %}
+
+    <form action="/analizar" method="post" enctype="multipart/form-data" class="card">
+        <label>Usuario (opcional):</label><br>
+        <input name="usuario_id" placeholder="id o correo" style="width:100%;max-width:360px"><br><br>
+
+        <label>Cédula (JPG/PNG o PDF):</label><br>
+        <input type="file" name="cedula" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <label>Certificado médico (JPG/PNG o PDF):</label><br>
+        <input type="file" name="certificado" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <button type="submit">Analizar</button>
+    </form>
+
+    {% if ultimo %}
+    <div class="card">
+        <h2>Resultado reciente</h2>
+        <p class="muted">
+            Usuario: <strong>{{ ultimo.usuario_id }}</strong> ·
+            Estado: <strong>{{ ultimo.estado }}</strong> ·
+            Documentos completos: <strong>{{ 'Sí' if ultimo.completo else 'No' }}</strong>
+        </p>
+
+        <h3>Resumen Cédula</h3>
+        <ul>
+            <li><strong>NUIP:</strong> {{ ultimo.resumen_cedula["NUIP"] }}</li>
+            <li><strong>Nombres:</strong> {{ ultimo.resumen_cedula["Nombres"] }}</li>
+            <li><strong>Apellidos:</strong> {{ ultimo.resumen_cedula["Apellidos"] }}</li>
+            <li><strong>Fecha de nacimiento:</strong> {{ ultimo.resumen_cedula["Fecha de nacimiento"] }}</li>
+            <li><strong>Lugar de expedición:</strong> {{ ultimo.resultado_cedula.get("lugar_expedicion","") }}</li>
+            <li><strong>Fecha de expedición:</strong> {{ ultimo.resultado_cedula.get("fecha_expedicion","") }}</li>
+            <li><strong>Encabezados válidos:</strong> {{ ultimo.resumen_cedula["Encabezados válidos"] }}</li>
+            <li><strong>República detectada:</strong> {{ ultimo.resumen_cedula["República detectada"] }}</li>
+            <li><strong>MRZ detectada:</strong> {{ ultimo.resumen_cedula["MRZ detectada"] }}</li>
+        </ul>
+
+        {% if ultimo.mrz_texto %}
+        <p><strong>MRZ leída:</strong> <code>{{ ultimo.mrz_texto }}</code></p>
+        {% endif %}
+
+        {% set miss_ced = ultimo.resultado_cedula.get('missing_fields', []) %}
+        {% if miss_ced %}
+        <p><strong>Observaciones cédula:</strong></p>
+        <ul>
+            {% for m in miss_ced %}
+            <li>{{ m }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <h3>Resumen Certificado</h3>
+        <ul>
+            <li><strong>Tipo detectado:</strong> {{ ultimo.resumen_certificado["Tipo detectado"] }}</li>
+            <li><strong>Nombre paciente:</strong> {{ ultimo.resumen_certificado["Nombre paciente"] }}</li>
+            <li><strong>Fecha:</strong> {{ ultimo.resumen_certificado["Fecha"] }}</li>
+            <li><strong>Resultado:</strong> {{ ultimo.resumen_certificado["Resultado"] }}</li>
+            <li><strong>Médico:</strong> {{ ultimo.resumen_certificado["Médico"] }}</li>
+            <li><strong>Registro profesional:</strong> {{ ultimo.resumen_certificado["Registro profesional"] }}</li>
+            <li><strong>Firma detectada:</strong> {{ ultimo.resumen_certificado["Firma detectada"] }}</li>
+        </ul>
+
+        {% set miss_cert = ultimo.resultado_certificado.get('missing_fields', []) %}
+        {% if miss_cert %}
+        <p><strong>Observaciones certificado:</strong></p>
+        <ul>
+            {% for m in miss_cert %}
+            <li>{{ m }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <details>
+            <summary>Ver JSON completo devuelto por la IA</summary>
+            <pre>{{ ultimo | tojson(indent=2) }}</pre>
+        </details>
+    </div>
+    {% endif %}
+</body>
+
+</html>
