@@ -1,0 +1,17 @@
+/* Botón invisible que aparece al enfocar con Tab: ayuda a saltar directo al contenido */
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--sec);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  z-index: 9999;
+}
+
+.skipLink:focus {
+  left: 12px;
+  top: 12px;
+  outline: 2px solid var(--pri);
+}
