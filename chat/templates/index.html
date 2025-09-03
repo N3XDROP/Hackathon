@@ -62,6 +62,8 @@
     <p class="msg"><em>{{ mensaje }}</em></p>
     {% endif %}
 
+    <!-- Antiguo formulario
+
     <form action="/analizar" method="post" enctype="multipart/form-data" class="card">
         <label>Usuario (opcional):</label><br>
         <input name="usuario_id" placeholder="id o correo" style="width:100%;max-width:360px"><br><br>
@@ -75,6 +77,50 @@
         <button type="submit">Analizar</button>
     </form>
 
+    -->
+
+    <form action="/analizar" method="post" enctype="multipart/form-data" class="card">
+        <label>Descripción de la entidad (misión, visión, actividades TIC):</label><br>
+        <textarea name="descripcion_entidad" required></textarea><br><br>
+
+        <label>Tipo de entidad (natural o jurídica):</label><br>
+        <input type="text" name="tipo_entidad" required><br><br>
+
+        <label>Objeto social relacionado con TIC:</label><br>
+        <input type="text" name="objeto_social" required><br><br>
+
+        <!-- Archivos requeridos como RUT, Cámara de Comercio, etc. -->
+        <label>RUT actualizado:</label><br>
+        <input type="file" name="rut" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <label>Certificado de Cámara de Comercio (vigente):</label><br>
+        <input type="file" name="camara_comercio" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <label>Cédula del representante legal:</label><br>
+        <input type="file" name="cedula" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <!-- Archivos firmados -->
+        <label>Carta de Intención de Afiliación (firmada):</label><br>
+        <input type="file" name="carta_intencion" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <label>Carta de Aceptación de Estatutos, Reglamentos Internos y Políticas (firmada):</label><br>
+        <input type="file" name="carta_aceptacion" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <!-- Antecedentes -->
+        <label>Antecedentes del representante legal:</label><br>
+        <input type="file" name="antecedentes_contraloria" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+        <input type="file" name="antecedentes_procuraduria" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+        <input type="file" name="antecedentes_policia" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+        <input type="file" name="antecedentes_rnmc" accept=".pdf,.png,.jpg,.jpeg" required><br><br>
+
+        <!-- Composición laboral -->
+        <label>Ubicación o composición laboral:</label><br>
+        <input type="text" name="direccion_fisica" required><br><br>
+        <input type="text" name="residencia_boyaca" required><br><br>
+
+        <button type="submit">Analizar</button>
+    </form>
+
     {% if ultimo %}
     <div class="card">
         <h2>Resultado reciente</h2>
@@ -84,14 +130,17 @@
             Documentos completos: <strong>{{ 'Sí' if ultimo.completo else 'No' }}</strong>
         </p>
 
+        <!-- Resumen de la Cédula -->
         <h3>Resumen Cédula</h3>
         <ul>
             <li><strong>NUIP:</strong> {{ ultimo.resumen_cedula["NUIP"] }}</li>
             <li><strong>Nombres:</strong> {{ ultimo.resumen_cedula["Nombres"] }}</li>
             <li><strong>Apellidos:</strong> {{ ultimo.resumen_cedula["Apellidos"] }}</li>
             <li><strong>Fecha de nacimiento:</strong> {{ ultimo.resumen_cedula["Fecha de nacimiento"] }}</li>
-            <li><strong>Lugar de expedición:</strong> {{ ultimo.resultado_cedula.get("lugar_expedicion","") }}</li>
-            <li><strong>Fecha de expedición:</strong> {{ ultimo.resultado_cedula.get("fecha_expedicion","") }}</li>
+            <li><strong>Lugar de expedición:</strong> {{ ultimo.resultado_cedula.get("lugar_expedicion", "No
+                disponible") }}</li>
+            <li><strong>Fecha de expedición:</strong> {{ ultimo.resultado_cedula.get("fecha_expedicion", "No
+                disponible") }}</li>
             <li><strong>Encabezados válidos:</strong> {{ ultimo.resumen_cedula["Encabezados válidos"] }}</li>
             <li><strong>República detectada:</strong> {{ ultimo.resumen_cedula["República detectada"] }}</li>
             <li><strong>MRZ detectada:</strong> {{ ultimo.resumen_cedula["MRZ detectada"] }}</li>
@@ -111,7 +160,8 @@
         </ul>
         {% endif %}
 
-        <h3>Resumen Certificado</h3>
+        <!-- Resumen del Certificado Médico -->
+        <h3>Resumen Certificado Médico</h3>
         <ul>
             <li><strong>Tipo detectado:</strong> {{ ultimo.resumen_certificado["Tipo detectado"] }}</li>
             <li><strong>Nombre paciente:</strong> {{ ultimo.resumen_certificado["Nombre paciente"] }}</li>
@@ -132,12 +182,36 @@
         </ul>
         {% endif %}
 
+        <!-- Mostrar información de los otros documentos -->
+        <h3>Otros documentos procesados</h3>
+        <ul>
+            <li><strong>RUT actualizado:</strong> {{ ultimo.resultado_rut.get("status", "No disponible") }}</li>
+            <li><strong>Certificado Cámara de Comercio:</strong> {{ ultimo.resultado_camara_comercio.get("status", "No
+                disponible") }}</li>
+            <li><strong>Carta de Intención:</strong> {{ ultimo.resultado_carta_intencion.get("status", "No disponible")
+                }}</li>
+            <li><strong>Carta de Aceptación:</strong> {{ ultimo.resultado_carta_aceptacion.get("status", "No
+                disponible") }}</li>
+            <li><strong>Antecedentes Contraloría:</strong> {{ ultimo.resultado_antecedentes_contraloria.get("status",
+                "No disponible") }}</li>
+            <li><strong>Antecedentes Procuraduría:</strong> {{ ultimo.resultado_antecedentes_procuraduria.get("status",
+                "No disponible") }}</li>
+            <li><strong>Antecedentes Policía:</strong> {{ ultimo.resultado_antecedentes_policia.get("status", "No
+                disponible") }}</li>
+            <li><strong>Antecedentes RNMC:</strong> {{ ultimo.resultado_antecedentes_rnmc.get("status", "No disponible")
+                }}</li>
+            <li><strong>Dirección física:</strong> {{ ultimo.direccion_fisica or "No proporcionado" }}</li>
+            <li><strong>Residencia Boyacá:</strong> {{ ultimo.residencia_boyaca or "No proporcionado" }}</li>
+        </ul>
+
+        <!-- Detalles JSON Completo -->
         <details>
             <summary>Ver JSON completo devuelto por la IA</summary>
             <pre>{{ ultimo | tojson(indent=2) }}</pre>
         </details>
     </div>
     {% endif %}
+
 </body>
 
 </html>

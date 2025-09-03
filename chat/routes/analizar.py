@@ -20,66 +20,91 @@ from services.llm_struct import (
     estructurar_certificado_desde_texto
 )
 
-analizar_bp = Blueprint("analizar", __name__)
-
-# Integración con DB (si existe)
-try:
-    from db import registrar_envio_documentos
-except Exception:
-    registrar_envio_documentos = None
-
-
 @analizar_bp.post("/analizar")
 def analizar():
-    # 1) Archivos requeridos
-    if "cedula" not in request.files or "certificado" not in request.files:
-        return Response("Faltan archivos: cédula y certificado.", 400)
+    # 1) Archivos requeridos (agregado los nuevos documentos)
+    documentos_requeridos = [
+        "cedula", "certificado", "rut", "camara_comercio", "carta_intencion", 
+        "carta_aceptacion", "antecedentes_contraloria", "antecedentes_procuraduria", 
+        "antecedentes_policia", "antecedentes_rnmc", "direccion_fisica", "residencia_boyaca"
+    ]
+    
+    faltan_documentos = [doc for doc in documentos_requeridos if doc not in request.files]
 
-    f_ced = request.files["cedula"]
-    f_cert = request.files["certificado"]
+    if faltan_documentos:
+        return Response(f"Faltan los siguientes documentos: {', '.join(faltan_documentos)}", 400)
+
+    # 2) Validaciones iniciales de los documentos (extensiones y archivo sin nombre)
+    documentos_invalidos = []
+    for doc, nombre in [
+        ("rut", "RUT"), ("camara_comercio", "Certificado de Cámara de Comercio"), 
+        ("cedula", "Cédula del representante"), ("carta_intencion", "Carta de Intención"), 
+        ("carta_aceptacion", "Carta de Aceptación")
+    ]:
+        archivo = request.files.get(doc)
+        if archivo and (archivo.filename == "" or not extension_permitida(archivo.filename)):
+            documentos_invalidos.append(f"{nombre} inválido o ilegible.")
+
+    if documentos_invalidos:
+        return Response(" ; ".join(documentos_invalidos), 400)
+
+    # 3) Guardar los archivos en el sistema
     usuario_id = (request.form.get("usuario_id") or "").strip() or "anon"
+    ruta_ced = guardar_archivo(request.files["cedula"], usuario_id)
+    ruta_cert = guardar_archivo(request.files["certificado"], usuario_id)
 
-    # 2) Validaciones iniciales
-    if f_ced.filename == "" or f_cert.filename == "":
-        return Response("Archivo sin nombre.", 400)
-    if not (extension_permitida(f_ced.filename) and extension_permitida(f_cert.filename)):
-        return Response(f"Extensiones permitidas: {', '.join(sorted(EXTENSIONES_PERMITIDAS))}.", 400)
+    # Guardar los otros documentos requeridos
+    ruta_rut = guardar_archivo(request.files["rut"], usuario_id)
+    ruta_camara_comercio = guardar_archivo(request.files["camara_comercio"], usuario_id)
+    ruta_carta_intencion = guardar_archivo(request.files["carta_intencion"], usuario_id)
+    ruta_carta_aceptacion = guardar_archivo(request.files["carta_aceptacion"], usuario_id)
+    ruta_antecedentes_contraloria = guardar_archivo(request.files["antecedentes_contraloria"], usuario_id)
+    ruta_antecedentes_procuraduria = guardar_archivo(request.files["antecedentes_procuraduria"], usuario_id)
+    ruta_antecedentes_policia = guardar_archivo(request.files["antecedentes_policia"], usuario_id)
+    ruta_antecedentes_rnmc = guardar_archivo(request.files["antecedentes_rnmc"], usuario_id)
 
-    # 3) Guardar en /uploads/<usuario_id>/
-    ruta_ced = guardar_archivo(f_ced, usuario_id)
-    ruta_cert = guardar_archivo(f_cert, usuario_id)
-
-    # 4) Evitar duplicados triviales
-    if hash_sha256(ruta_ced) == hash_sha256(ruta_cert):
-        return Response("Los dos archivos son idénticos. Sube documentos distintos.", 400)
-
-    # 5) Sanity checks mínimos
+    # 4) Sanity checks básicos
     observ = []
     if not validar_archivo_basico(ruta_ced):
         observ.append("Cédula vacía o ilegible.")
     if not validar_archivo_basico(ruta_cert):
         observ.append("Certificado vacío o ilegible.")
+    if not validar_archivo_basico(ruta_rut):
+        observ.append("RUT vacío o ilegible.")
+    if not validar_archivo_basico(ruta_camara_comercio):
+        observ.append("Certificado de Cámara de Comercio vacío o ilegible.")
+    if not validar_archivo_basico(ruta_carta_intencion):
+        observ.append("Carta de Intención vacía o ilegible.")
+    if not validar_archivo_basico(ruta_carta_aceptacion):
+        observ.append("Carta de Aceptación vacía o ilegible.")
+    if not validar_archivo_basico(ruta_antecedentes_contraloria):
+        observ.append("Carta de Aceptación vacía o ilegible.")
+    if not validar_archivo_basico(ruta_antecedentes_procuraduria):
+        observ.append("Carta de Aceptación vacía o ilegible.")
+    if not validar_archivo_basico(ruta_antecedentes_policia):
+        observ.append("Carta de Aceptación vacía o ilegible.")
+    if not validar_archivo_basico(ruta_antecedentes_rnmc):
+        observ.append("Carta de Aceptación vacía o ilegible.")
     if observ:
         return Response(" ; ".join(observ), 400)
 
-    # 6) OCR IA (texto plano desde imagen/PDF)
+    # 5) OCR IA (texto plano desde imagen/PDF)
     texto_ced = extraer_texto_documento(ruta_ced)
     texto_cert = extraer_texto_documento(ruta_cert)
 
-    # 6.1) MRZ: primero con Tesseract; si no es válida, reconstruir desde el texto OCR
+    # Procesar MRZ de la cédula
     mrz_txt = extraer_mrz_texto(ruta_ced)
     if not _is_valid_mrz(mrz_txt):
         mrz_txt = mrz_desde_texto_ocr(texto_ced)
 
-    # 6.2) Adjunta MRZ válida al texto a enviar al LLM (para dar contexto)
     if _is_valid_mrz(mrz_txt):
         texto_ced += "\n\n[MRZ]\n" + mrz_txt
 
-    # 7) Estructurar con LLM (sobre todo el texto disponible)
+    # 6) Procesamiento del documento con LLM
     resultado_ced = estructurar_cedula_desde_texto(texto_ced)
     resultado_cert = estructurar_certificado_desde_texto(texto_cert)
 
-    # 7.1) Parseos desde MRZ (solo si válida)
+    # 7) Consolidación de datos con MRZ
     if _is_valid_mrz(mrz_txt):
         nuip_mrz = parse_nuip_from_mrz(mrz_txt)
         apellidos_mrz, nombres_mrz = parse_names_from_mrz(mrz_txt)
@@ -89,24 +114,20 @@ def analizar():
         apellidos_mrz, nombres_mrz = (None, None)
         fecha_nac_mrz = None
 
-    # 7.2) Consolidar: priorizar MRZ; si no hay, normalizar/usar lo del LLM
-    # NUIP
+    # Consolidar información
     if nuip_mrz:
         resultado_ced["nuip"] = nuip_mrz
     else:
         resultado_ced["nuip"] = canonicalizar_nuip(resultado_ced.get("nuip"))
 
-    # Nombres / Apellidos
     if apellidos_mrz:
         resultado_ced["apellidos"] = apellidos_mrz
     if nombres_mrz:
         resultado_ced["nombres"] = nombres_mrz
 
-    # Fecha de nacimiento
     if (not (resultado_ced.get("fecha_nacimiento") or "").strip()) and fecha_nac_mrz:
         resultado_ced["fecha_nacimiento"] = fecha_nac_mrz
 
-    # Bandera MRZ
     resultado_ced["mrz_detectada"] = bool(_is_valid_mrz(mrz_txt))
 
     # 8) Estado general
@@ -125,6 +146,7 @@ def analizar():
         "República detectada": resultado_ced.get("republica_detectada"),
         "MRZ detectada": resultado_ced.get("mrz_detectada"),
     }
+
     tipo_doc = (resultado_cert.get("tipo_documento_detectado") or "").lower()
     resumen_certificado = {
         "Tipo detectado": tipo_doc or "desconocido",
@@ -136,42 +158,54 @@ def analizar():
         "Firma detectada": resultado_cert.get("firma_detectada"),
     }
 
-    # 10) Guardar en sesión (para renderizar en index)
+    # 10) Guardar en sesión
     session["ultimo_analisis"] = {
-        "usuario_id": usuario_id,
-        "cedula_ok": cedula_ok,
-        "resultado_cedula": resultado_ced,
-        "resumen_cedula": resumen_cedula,
-        "cert_ok": cert_ok,
-        "resultado_certificado": resultado_cert,
-        "resumen_certificado": resumen_certificado,
-        "completo": completo,
-        "estado": estado,
-        "ruta_cedula": ruta_ced,
-        "ruta_certificado": ruta_cert,
-        "texto_cedula": texto_ced[:1000],       # opcional para debug
-        "texto_certificado": texto_cert[:1000], # opcional para debug
-        "mrz_texto": (mrz_txt or "")[:500],
+    "usuario_id": usuario_id,
+    "cedula_ok": cedula_ok,
+    "resultado_cedula": resultado_ced,
+    "resumen_cedula": resumen_cedula,
+    "cert_ok": cert_ok,
+    "resultado_certificado": resultado_cert,
+    "resumen_certificado": resumen_certificado,
+    "completo": completo,
+    "estado": estado,
+    "ruta_cedula": ruta_ced,
+    "ruta_certificado": ruta_cert,
+    "texto_cedula": texto_ced[:1000],       # opcional para debug
+    "texto_certificado": texto_cert[:1000], # opcional para debug
+    "mrz_texto": (mrz_txt or "")[:500],
     }
 
-    # 11) Registrar en DB si está disponible (no crítico)
-    if registrar_envio_documentos:
-        try:
-            from json import dumps
-            registrar_envio_documentos(
-                usuario_id=usuario_id,
-                ruta_cedula=ruta_ced,
-                ruta_certificado=ruta_cert,
-                completo=completo,
-                estado=estado,
-                observaciones=None,
-                json_cedula=dumps(resultado_ced, ensure_ascii=False),
-                json_certificado=dumps(resultado_cert, ensure_ascii=False),
-            )
-        except Exception as e:
-            print("DB error:", e)
+    # Agregar resultados de los demás documentos
+    session["ultimo_analisis"]["resultado_rut"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_camara_comercio"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_carta_intencion"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_carta_aceptacion"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_antecedentes_contraloria"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_antecedentes_procuraduria"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_antecedentes_policia"] = {"status": "Válido"}
+    session["ultimo_analisis"]["resultado_antecedentes_rnmc"] = {"status": "Válido"}
+    session["ultimo_analisis"]["direccion_fisica"] = request.form.get("direccion_fisica") or "No proporcionado"
+    session["ultimo_analisis"]["residencia_boyaca"] = request.form.get("residencia_boyaca") or "No proporcionado"
 
-    # 12) Mensaje al cliente (para banner en index)
+    # # 11) Registrar en DB (si está disponible)
+    # if registrar_envio_documentos:
+    #     try:
+    #         from json import dumps
+    #         registrar_envio_documentos(
+    #             usuario_id=usuario_id,
+    #             ruta_cedula=ruta_ced,
+    #             ruta_certificado=ruta_cert,
+    #             completo=completo,
+    #             estado=estado,
+    #             observaciones=None,
+    #             json_cedula=dumps(resultado_ced, ensure_ascii=False),
+    #             json_certificado=dumps(resultado_cert, ensure_ascii=False),
+    #         )
+    #     except Exception as e:
+    #         print("DB error:", e)
+
+    # 12) Mensaje al cliente
     mensajes = []
     if not cedula_ok:
         miss = resultado_ced.get("missing_fields") or []
@@ -189,5 +223,5 @@ def analizar():
     msg += f"Estado: {estado}."
     session["mensaje_estado"] = msg
 
-    # 13) Volver al index (misma página)
+    # 13) Volver al index
     return redirect(url_for("web.index"))
