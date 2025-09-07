@@ -16,7 +16,6 @@ from services.ocr_ai import (
 )
 from services.llm_struct import (
     estructurar_cedula_desde_texto,
-    estructurar_certificado_desde_texto,
     estructurar_rut_desde_texto,
     estructurar_contraloria_desde_texto,
     estructurar_procuraduria_desde_texto,
@@ -101,12 +100,6 @@ def analizar():
         resultados["cedula"] = resultado_ced
         session["texto_cedula"] = texto_ced[:1000]
         session["mrz_texto"] = (mrz_txt or "")[:500]
-
-    if "certificado" in rutas:
-        texto_cert = extraer_texto_documento(rutas["certificado"])
-        resultado_cert = estructurar_certificado_desde_texto(texto_cert)
-        resultados["certificado"] = resultado_cert
-        session["texto_certificado"] = texto_cert[:1000]
 
     if "rut" in rutas:
         texto_rut = extraer_texto_documento(rutas["rut"])

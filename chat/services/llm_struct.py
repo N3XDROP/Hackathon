@@ -134,34 +134,12 @@ Criterio ok=true: encabezados_validos=true AND republica_detectada=true AND mrz_
 TEXTO_OCR:
 """
 
-PROMPT_CERT = """
-Eres verificador de CERTIFICADOS MÉDICOS LABORALES de aptitud. Recibirás TEXTO OCR plano.
-No inventes datos. Copia exactamente lo que veas.
-Devuelve SOLO JSON con claves:
-{
-  "ok": boolean,
-  "missing_fields": [string],
-  "tipo_documento_detectado": "medico"|"afiliacion"|"otro",
-  "nombre_paciente": string,
-  "fecha": string,
-  "resultado": "APTO"|"NO APTO"|"OTRO",
-  "nombre_medico": string,
-  "registro_profesional": string,
-  "firma_detectada": boolean
-}
-Criterio ok=true: tipo_documento_detectado="medico" AND resultado presente AND (nombre_medico o registro_profesional) presente AND fecha presente.
-TEXTO_OCR:
-"""
-
 # =========================================================
 # FUNCIONES DE ESTRUCTURACIÓN
 # =========================================================
 
 def estructurar_cedula_desde_texto(texto_ocr: str) -> dict:
     return _chat_json(PROMPT_CEDULA + "\n\"\"\"\n" + (texto_ocr[:12000]) + "\n\"\"\"\n")
-
-def estructurar_certificado_desde_texto(texto_ocr: str) -> dict:
-    return _chat_json(PROMPT_CERT + "\n\"\"\"\n" + (texto_ocr[:12000]) + "\n\"\"\"\n")
 
 def estructurar_rut_desde_texto(texto_ocr: str) -> dict:
     return _chat_json(PROMPT_RUT + "\n\"\"\"\n" + (texto_ocr[:12000]) + "\n\"\"\"\n")
