@@ -7,6 +7,7 @@
 - (Opcional) GPU NVIDIA para acelerar EasyOCR.
 
 # Instalacion IA Ollama
+ollama pull mistral:instruct
 ollama pull llava:latest
 
 # Instalacion OCR Tesseract
@@ -27,8 +28,10 @@ pip uninstall -y torch torchvision torchaudio
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 ## Ejecutar programa
-cd "ruta_proyecto_chat"
+cd "ruta_proyecto"
+python -m venv genai
 .\genai\Scripts\activate
+### Instalación (CPU) antes de correr el python app.py
 python app.py
 ### abre http://127.0.0.1:5000
 

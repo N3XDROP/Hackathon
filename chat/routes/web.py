@@ -1,4 +1,3 @@
-# routes/web.py
 from flask import Blueprint, render_template, session
 
 web_bp = Blueprint("web", __name__)

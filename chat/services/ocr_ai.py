@@ -1,4 +1,3 @@
-# services/ocr_ai.py
 import re
 import fitz  # PyMuPDF
 import numpy as np
