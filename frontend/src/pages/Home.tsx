@@ -1,28 +1,24 @@
 import { Link } from "react-router-dom";
+import styles from "./Home.module.css";
 
 export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section style={{ padding: "56px 0", background: "var(--surface)" }}>
-        <div className="container" style={{ display: "grid", gap: 16, textAlign: "center" }}>
-          <h1 style={{ margin: 0, fontSize: "2.4rem", color: "var(--sec)" }}>
+      <section className={styles.hero}>
+        <div className="container">
+          <h1 className={styles.heroTitle}>
             Impulsamos el ecosistema TIC en Boyacá
           </h1>
-          <p style={{ margin: "8px auto 0", maxWidth: 760 }}>
-            Conectamos empresas, academia y sector público para acelerar la innovación y la competitividad.
+          <p className={styles.heroText}>
+            Conectamos empresas, academia y sector público para acelerar la
+            innovación y la competitividad.
           </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 12, flexWrap: "wrap" }}>
-            <Link
-              to="/quienes-somos"
-              style={{ padding: "12px 16px", borderRadius: 10, background: "var(--pri)", color: "#fff", fontWeight: 700 }}
-            >
+          <div className={styles.heroButtons}>
+            <Link to="/quienes-somos" className={styles.btnPrimary}>
               Conoce SumerTIC
             </Link>
-            <Link
-              to="/contacto"
-              style={{ padding: "12px 16px", borderRadius: 10, border: "1px solid var(--sec)", color: "var(--sec)", fontWeight: 700 }}
-            >
+            <Link to="/contacto" className={styles.btnSecondary}>
               Contáctanos
             </Link>
           </div>
@@ -30,17 +26,10 @@ export default function Home() {
       </section>
 
       {/* HIGHLIGHTS */}
-      <section style={{ padding: "36px 0" }}>
-        <div className="container" style={{ display: "grid", gap: 16 }}>
-          <h2 style={{ margin: 0, color: "var(--sec)" }}>Lo que hacemos</h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: 16,
-            }}
-          >
+      <section className={styles.highlights}>
+        <div className="container">
+          <h2 className={styles.highlightsTitle}>Lo que hacemos</h2>
+          <div className={styles.grid3}>
             <Card
               title="Articulación del ecosistema"
               text="Más de 15 empresas TIC y 30 actores vinculados para proyectos colaborativos."
@@ -54,28 +43,18 @@ export default function Home() {
               text="Proyectos de innovación y diagnóstico empresarial para detectar oportunidades."
             />
           </div>
-
-          <style>{`
-            @media (min-width: 900px){
-              .home-grid-3 {
-                display:grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap:16px;
-              }
-            }
-          `}</style>
         </div>
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: "36px 0", background: "linear-gradient(90deg, var(--pri) 0%, var(--sec) 100%)", color: "#fff" }}>
-        <div className="container" style={{ display: "grid", gap: 12, textAlign: "center" }}>
-          <h3 style={{ margin: 0 }}>¿Quieres unirte al Clúster?</h3>
-          <p style={{ margin: 0 }}>Inicia tu proceso y sube tus documentos para ser evaluado por el Comité de Ingreso.</p>
-          <Link
-            to="/login"
-            style={{ justifySelf: "center", padding: "12px 16px", borderRadius: 10, background: "#fff", color: "var(--sec)", fontWeight: 700 }}
-          >
+      <section className={styles.cta}>
+        <div className="container">
+          <h3 className={styles.ctaTitle}>¿Quieres unirte al Clúster?</h3>
+          <p className={styles.ctaText}>
+            Inicia tu proceso y sube tus documentos para ser evaluado por el
+            Comité de Ingreso.
+          </p>
+          <Link to="/login" className={styles.ctaBtn}>
             Iniciar proceso
           </Link>
         </div>
@@ -87,8 +66,8 @@ export default function Home() {
 function Card({ title, text }: { title: string; text: string }) {
   return (
     <div className="card">
-      <h3 style={{ marginTop: 0, color: "var(--sec)" }}>{title}</h3>
-      <p style={{ marginBottom: 0 }}>{text}</p>
+      <h3 className={styles.cardTitle}>{title}</h3>
+      <p className={styles.cardText}>{text}</p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { branding } from "../config/branding";
 
-type Variant = "primary" | "alt" | "icon";
+type Variant = "primary" | "alt" | "icon" | "clean";
 
 interface LogoProps {
   variant?: Variant;        // versión del logo

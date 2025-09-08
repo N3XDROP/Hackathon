@@ -1,0 +1,207 @@
+/* ==========================
+   Hero
+=========================== */
+.hero {
+  padding: 50px 0;
+  text-align: center;
+  background-color: var(--bg-light);
+  color: var(--text);
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: var(--sec);
+  text-align: center;
+}
+
+.heroText {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  color: var(--text);
+  text-align: center;
+}
+
+/* ==========================
+   Highlights / Cards
+=========================== */
+.highlights {
+  padding: 50px 0;
+}
+
+.highlightsTitle {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  text-align: center;
+  color: var(--sec);
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* <--- agrega esto */
+  text-align: center;  /* <--- centra los textos dentro de la card */
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.cardImage {
+  width: 100%;
+  padding-top: 50%; /* proporción 2:1 */
+  background-size: cover;
+  background-position: center;
+}
+
+.cardContent {
+  padding: 20px;
+  text-align: center;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: var(--sec);
+}
+
+.cardText {
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 15px;
+}
+
+.cardLink {
+  font-weight: bold;
+  color: var(--pri);
+  text-decoration: none;
+}
+
+.cardLink:hover {
+  text-decoration: underline;
+}
+
+/* ==========================
+   CTA Final
+=========================== */
+.cta {
+  background: linear-gradient(90deg, var(--pri-2) 0%, var(--sec-3) 100%);
+  text-align: center;
+  color: var(--white);
+  padding: 50px 0;
+  text-align: center;
+}
+
+.ctaTitle {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.ctaText {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.ctaBtn {
+  background-color: var(--white);
+  color: var(--sec);
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.ctaBtn:hover {
+    background: var(--sec);
+  color: var(--white);
+}
+
+/* ==========================
+   Modo oscuro usando la paleta SumerTIC
+=========================== */
+html[data-theme="dark"] {
+  --bg-light: #111718;
+  --text: var(--white);
+  --card-bg: #111718;
+  --card-border: var(--sec-3);
+  --sec-dark: var(--pri-3);
+  --pri-dark: var(--pri-2);
+}
+
+html[data-theme="dark"] .hero {
+  background-color: var(--bg-light);
+  color: var(--text);
+}
+
+html[data-theme="dark"] .heroTitle {
+  color: var(--sec-dark);
+}
+
+html[data-theme="dark"] .heroText {
+  color: var(--text);
+}
+
+html[data-theme="dark"] .highlights {
+  background-color: var(--bg-light);
+}
+
+html[data-theme="dark"] .highlightsTitle {
+  color: var(--sec-dark);
+}
+
+html[data-theme="dark"] .card {
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+html[data-theme="dark"] .cardTitle {
+  color: var(--sec-dark);
+}
+
+html[data-theme="dark"] .cardText {
+  color: var(--text);
+}
+
+html[data-theme="dark"] .cardLink {
+  color: var(--pri-dark);
+}
+
+html[data-theme="dark"] .cardLink:hover {
+  color: var(--pri-3);
+}
+
+html[data-theme="dark"] .cta {
+  background: linear-gradient(90deg, var(--pri-2) 0%, var(--sec-3) 100%);
+  color: var(--white);
+}
+
+html[data-theme="dark"] .ctaTitle,
+html[data-theme="dark"] .ctaText {
+  color: var(--white);
+}
+
+html[data-theme="dark"] .ctaBtn {
+  background-color: var(--white);
+  color: var(--sec);
+}
+
+html[data-theme="dark"] .ctaBtn:hover {
+  background: var(--sec);
+  color: var(--white);
+}
