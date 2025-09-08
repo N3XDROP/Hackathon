@@ -1,0 +1,182 @@
+/* ==========================
+   Hero
+=========================== */
+.hero {
+  padding: 56px 0;
+  text-align: center;
+  display: grid;
+  gap: 16px;
+  background: var(--bg-light);
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: 2.4rem;
+  color: var(--sec);
+}
+
+.heroText {
+  margin: 8px auto 0;
+  max-width: 760px;
+  color: var(--text);
+}
+
+.heroButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--pri);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.btnSecondary {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--sec);
+  color: var(--sec);
+  font-weight: 700;
+}
+
+/* ==========================
+   Highlights
+=========================== */
+.highlights {
+  padding: 36px 0;
+  display: grid;
+  gap: 16px;
+}
+
+.highlightsTitle {
+  margin: 0;
+  color: var(--sec);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardTitle {
+  margin-top: 0;
+  color: var(--sec);
+}
+
+.cardText {
+  margin-bottom: 0;
+  color: var(--text);
+}
+
+.cardLink {
+  color: var(--pri);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.cardLink:hover {
+  text-decoration: underline;
+}
+
+/* ==========================
+   CTA Final
+=========================== */
+.cta {
+  padding: 36px 0;
+  background: linear-gradient(90deg, var(--pri) 0%, var(--sec) 100%);
+  color: var(--white);
+  text-align: center;
+  display: grid;
+  gap: 12px;
+}
+
+.ctaTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.ctaText {
+  margin: 0;
+  font-size: 1.2rem;
+  opacity: 0.9;
+  color: var(--white);
+}
+
+.ctaBtn {
+  display: inline-block;
+  margin-top: 20px;
+  justify-self: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--sec);
+  font-weight: 700;
+}
+
+.ctaBtn:hover {
+  background: var(--sec);
+  color: var(--white);
+}
+
+/* ==========================
+   Dark Mode
+=========================== */
+html[data-theme="dark"] {
+  --bg-light: #111718;
+  --text: var(--white);
+  --card-bg: #111718;
+  --card-border: var(--sec-3);
+  --btn-bg: var(--pri-2);
+  --sec-dark: var(--pri-3);
+}
+
+html[data-theme="dark"] .heroTitle {
+  color: var(--sec-dark);
+}
+
+html[data-theme="dark"] .heroText {
+  color: var(--text);
+}
+
+html[data-theme="dark"] .btnSecondary {
+  border-color: var(--sec-dark);
+  color: var(--sec-dark);
+}
+
+html[data-theme="dark"] .cardTitle {
+  color: var(--sec-dark);
+}
+
+html[data-theme="dark"] .cardText {
+  color: var(--text);
+}
+
+html[data-theme="dark"] .ctaBtn {
+  background: var(--white);
+  color: var(--sec);
+}
+
+html[data-theme="dark"] .ctaBtn:hover {
+  background: var(--sec);
+  color: var(--white);
+}

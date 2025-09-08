@@ -1,0 +1,238 @@
+/* ====== Base ====== */
+.wrapper {
+  min-height: 100dvh;
+  background: var(--bg-light);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+.muted { opacity: .8; text-align: center; padding: 48px 0; }
+.error { color: #d74a4a; }
+.notFound { max-width: 720px; margin: 64px auto; text-align: center; }
+
+/* =========================
+   HERO (imagen de fondo + overlay con tu paleta)
+========================= */
+.hero {
+  position: relative;
+  min-height: 52vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 5vw, 56px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  isolation: isolate;
+}
+
+/* Overlay con tu gradiente (pri → sombra) para legibilidad */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--pri) 28%, transparent) 0%,
+      rgba(0,0,0,.45) 30%,
+      rgba(0,0,0,.6) 100%);
+  z-index: 0;
+}
+
+/* Card “glass” encima del hero en modo claro */
+.heroCard {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  width: min(92vw, 960px);
+  margin: 0 auto;
+  padding: clamp(22px, 4vw, 34px);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  text-align: center;
+}
+
+
+.title {
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  line-height: 1.2;
+  margin: 0 0 .35rem;
+  color: var(--pri-2);
+  text-shadow: 0 2px 12px rgba(0,0,0,.25);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--white);
+  opacity: .9;
+  margin: 0;
+}
+
+.heroActions { margin-top: 16px; }
+
+.backBtn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--sec);
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform .15s ease, background .2s ease, color .2s ease;
+}
+.backBtn:hover { transform: translateY(-1px); background: var(--sec); color: var(--white); }
+
+/* =========================
+   CARD de contenido
+========================= */
+.content { padding: clamp(18px, 3.5vw, 40px) 0 64px; }
+
+.card {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border, rgba(0,0,0,.08));
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,.1);
+  padding: clamp(20px, 4vw, 36px);
+}
+
+.sectionTitle {
+  font-size: clamp(1.15rem, 2.2vw, 1.35rem);
+  color: var(--sec);
+  margin: 0 0 10px;
+}
+
+.intro {
+  margin: 0;
+  color: var(--text);
+  opacity: .95;
+}
+
+.divider {
+  height: 1px;
+  border-top: 1px dashed color-mix(in oklab, var(--text) 24%, transparent);
+  margin: clamp(18px, 3vw, 28px) 0;
+}
+
+/* Items */
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 720px) { .itemsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.item {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border, rgba(0,0,0,.08));
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 6px rgba(0,0,0,.06);
+  text-align: left;
+}
+
+.itemTitle {
+  margin: 0 0 6px;
+  color: var(--sec);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.itemDesc {
+  margin: 0;
+  color: var(--text);
+  opacity: .95;
+  font-size: .98rem;
+}
+
+/* Beneficios */
+.benefitsList {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.benefit {
+  background-color: var(--card-bg);
+  border: 1px dashed var(--card-border, rgba(0,0,0,.12));
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+/* =========================
+   DARK MODE — SumerTIC
+   (contraste mejorado: card más clara que el bg,
+    títulos más claros y jerarquía en items/benefits)
+========================= */
+html[data-theme="dark"] {
+  --bg-light: #111718;
+  --text: var(--white);
+
+  /* tokens de superficies para jerarquía */
+  --surface-1: #1f2a30;  /* card principal (más clara que el fondo) */
+  --surface-2: #192125;  /* items/benefits (un paso más oscura) */
+
+  --card-bg: var(--surface-1);
+  --card-border: rgba(255,255,255,.12);
+
+  --sec-dark: var(--pri-3);
+  --pri-dark: var(--pri-2);
+}
+
+html[data-theme="dark"] .wrapper { background: var(--bg-light); color: var(--text); }
+
+html[data-theme="dark"] .heroOverlay {
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--pri-2) 30%, transparent) 0%,
+    rgba(0,0,0,.55) 35%,
+    rgba(0,0,0,.75) 100%);
+}
+
+/* hero card más clara en dark */
+html[data-theme="dark"] .heroCard {
+  background: rgba(255, 255, 255, .07);
+  backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, .14);
+  box-shadow: 0 16px 40px rgba(0,0,0,.45);
+}
+
+/* títulos con más contraste */
+html[data-theme="dark"] .title { color: var(--pri-3); text-shadow: 0 2px 12px rgba(0,0,0,.45); }
+html[data-theme="dark"] .subtitle { color: #f0f4fa; }
+
+html[data-theme="dark"] .backBtn {
+  background-color: var(--white);
+  color: var(--sec);
+}
+html[data-theme="dark"] .backBtn:hover { background: var(--sec); color: var(--white); }
+
+/* card principal más clara que el fondo */
+html[data-theme="dark"] .card {
+  background: var(--surface-1);
+  border-color: rgba(255,255,255,.10);
+  box-shadow: 0 10px 28px rgba(0,0,0,.4);
+}
+
+/* sección/títulos de contenido con acentos vivos */
+html[data-theme="dark"] .sectionTitle { color: var(--pri-2); }
+
+/* textos un poco más claros */
+html[data-theme="dark"] .intro,
+html[data-theme="dark"] .itemDesc { color: #e6edf6; }
+
+/* items y benefits un paso más oscuros (jerarquía) */
+html[data-theme="dark"] .item {
+  background: var(--surface-2);
+  border-color: rgba(255,255,255,.08);
+}
+html[data-theme="dark"] .benefit {
+  background: var(--surface-2);
+  border-color: rgba(255,255,255,.10);
+}

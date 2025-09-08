@@ -56,13 +56,43 @@ app.post("/login", (req, res, next) => {
 
 
 
-// ✅ **Ruta protegida para administración**
+// **Ruta protegida para administración**
 app.get("/admin", (req, res) => {
     if (req.isAuthenticated()) {
         res.send("Panel del administrador 🛠️");
     } else {
         res.status(401).send("❌ Debes iniciar sesión para acceder al panel");
     }
+});
+
+
+// ✅ Importa el JSON
+import raw from "./data/portafolio.json";
+
+type Service = {
+  id: string;
+  title: string;
+  text: string;
+  img: string;
+
+};
+
+
+const services: Service[] = Array.isArray(raw)
+  ? (raw as Service[])
+  : ((raw as any).services as Service[]) ?? [];
+
+// GET /api/services → solo resumen para la lista
+app.get("/api/services", (_req, res) => {
+  const resumen = services.map(({ id, title, text, img }) => ({ id, title, text, img }));
+  res.json(resumen);
+});
+
+// GET /api/services/:id → detalle completo
+app.get("/api/services/:id", (req: any, res: any) => {
+  const service = services.find((s) => s.id === req.params.id);
+  if (!service) return res.status(404).json({ error: "Servicio no encontrado" });
+  res.json(service);
 });
 
 // ✅ **Conexión a la base de datos y arranque del servidor**

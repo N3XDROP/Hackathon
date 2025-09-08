@@ -1,0 +1,131 @@
+{
+  "services": [
+    {
+      "id": "representacion",
+      "title": "Representación, Articulación y Networking",
+      "text": "Conecta a los miembros con oportunidades de negocio, alianzas y posicionamiento estratégico.",
+      "intro": "Este servicio integra a los miembros del Clúster con actores clave del ecosistema TIC mediante representación institucional y espacios de articulación que facilitan alianzas, visibilidad y acceso a oportunidades.",
+      "objective": "Conectar a los miembros con oportunidades de negocio, alianzas y posicionamiento estratégico a nivel regional, nacional e internacional.",
+      "img": "/images/representacion.png",
+      "items": [
+        { "title": "Representación institucional", "description": "Participación del Clúster en eventos regionales, nacionales e internacionales, abriendo espacios para la visibilidad de los miembros." },
+        { "title": "Alianzas estratégicas", "description": "Gestión de convenios con entidades públicas, privadas y académicas que impulsen proyectos conjuntos." },
+        { "title": "Rueda de Negocios TIC Boyacá", "description": "Organización y articulación de la rueda de negocios para conectar oferta y demanda del sector." },
+        { "title": "Eventos de networking", "description": "Acceso a encuentros sectoriales y multisectoriales para generar contactos de valor." },
+        { "title": "Comités y mesas de trabajo", "description": "Participación activa en espacios de gobernanza y coordinación regional/nacional." }
+      ],
+      "benefits": [
+        "Mayor visibilidad y posicionamiento sectorial.",
+        "Acceso temprano a iniciativas público–privadas.",
+        "Canales de relacionamiento con potenciales aliados y clientes.",
+        "Incidencia en agendas y políticas del sector."
+      ]
+    },
+    {
+      "id": "innovacion",
+      "title": "Innovación y Desarrollo Tecnológico",
+      "text": "Impulsa I+D colaborativa, prototipado y adopción tecnológica de alto impacto.",
+      "intro": "Apoyamos la creación y adopción de soluciones tecnológicas mediante investigación, protección de propiedad intelectual y espacios de prototipado, acelerando el ciclo de innovación.",
+      "objective": "Fomentar la creación y adopción de soluciones tecnológicas de alto impacto a través de I+D colaborativa y mecanismos de transferencia.",
+      "img": "/images/innovation.png",
+      "items": [
+        { "title": "Proyectos de I+D colaborativa", "description": "Diseño y ejecución con universidades y centros de investigación para resolver retos empresariales." },
+        { "title": "Gestión de propiedad intelectual", "description": "Acompañamiento en patentes, licenciamiento y protección de innovaciones." },
+        { "title": "Laboratorios virtuales", "description": "Entornos para prototipado, pruebas y validación de soluciones." },
+        { "title": "Convocatorias internas de innovación", "description": "Programas y llamados para financiar ideas de empresas miembro." },
+        { "title": "Plataforma de colaboración", "description": "Mecanismos y herramientas para co-desarrollar soluciones TIC." }
+      ],
+      "benefits": [
+        "Reducción del time-to-market de nuevos productos.",
+        "Fortalecimiento de capacidades de I+D y PI.",
+        "Acceso a talento e infraestructura científica.",
+        "Mayor tasa de éxito en prototipos y pilotos."
+      ]
+    },
+    {
+      "id": "capacitacion",
+      "title": "Capacitación y Talento TIC",
+      "text": "Programas de formación, certificación y vinculación de talento para el sector.",
+      "intro": "Elevamos las capacidades técnicas y de gestión del talento local mediante certificaciones, bootcamps, formación dual y conexión empresa–academia.",
+      "objective": "Desarrollar y fortalecer el talento TIC de la región con programas de alto impacto y certificaciones reconocidas.",
+      "img": "/images/training.jpg",
+      "items": [
+        { "title": "Certificaciones internacionales", "description": "Rutas en AWS, Cisco, Microsoft, Google, Scrum y Ciberseguridad." },
+        { "title": "Bootcamps y talleres", "description": "Formación intensiva en IA, IoT, analítica de datos y transformación digital." },
+        { "title": "Formación dual y prácticas", "description": "Esquemas con universidades y SENA para desarrollar experiencia real." },
+        { "title": "Banco de Talento TIC Boyacá", "description": "Directorio de perfiles especializados para facilitar la contratación." },
+        { "title": "Seminarios y charlas", "description": "Intercambio con expertos nacionales e internacionales." }
+      ],
+      "benefits": [
+        "Mejora del perfil competitivo de las empresas.",
+        "Rutas claras de upskilling/reskilling.",
+        "Aproximación rápida a perfiles idóneos.",
+        "Descuentos y cupos preferenciales para miembros."
+      ]
+    },
+    {
+      "id": "mercados",
+      "title": "Acceso a Mercados y Comercialización",
+      "text": "Estrategias y herramientas para expandirse a mercados nacionales e internacionales.",
+      "intro": "Ayudamos a posicionar a los miembros en nuevos mercados mediante misiones comerciales, plataforma digital y estrategias de marketing e inteligencia de mercados.",
+      "objective": "Facilitar la inserción y expansión de los miembros en mercados nacionales e internacionales.",
+      "img": "/images/markets.png",
+      "items": [
+        { "title": "Misiones comerciales", "description": "Agenda de misiones nacionales e internacionales con enfoque en resultados." },
+        { "title": "Plataforma digital del clúster", "description": "Portafolio online y capacidades de e-commerce para visibilizar oferta." },
+        { "title": "Marketing y posicionamiento", "description": "Estrategias sectoriales de marca y contenido para captar demanda." },
+        { "title": "Inteligencia de mercados", "description": "Análisis de tendencias, competencia y prospección de clientes." },
+        { "title": "Apoyo en exportación", "description": "Acompañamiento en procesos de internacionalización de servicios TIC." }
+      ],
+      "benefits": [
+        "Pipeline comercial más robusto.",
+        "Mejor visibilidad y posicionamiento en nichos específicos.",
+        "Aceleración de oportunidades internacionales.",
+        "Herramientas digitales para captar demanda."
+      ]
+    },
+    {
+      "id": "consultorias",
+      "title": "Servicios Especializados y Consultorías",
+      "text": "Soluciones técnicas y estratégicas a la medida para fortalecer la gestión empresarial.",
+      "intro": "Brindamos consultorías en transformación digital, ciberseguridad y proyectos estratégicos, además de apoyo legal–contable y desarrollo tecnológico a medida.",
+      "objective": "Proveer soluciones técnicas y estratégicas para el fortalecimiento e innovación empresarial.",
+      "img": "/images/consulting.png",
+      "items": [
+        { "title": "Transformación digital", "description": "Hoja de ruta, adopción de tecnologías 4.0 y digitalización de procesos." },
+        { "title": "Auditorías de ciberseguridad", "description": "Revisión de riesgos, cumplimiento normativo y planes de mejora." },
+        { "title": "Soluciones de software y hardware", "description": "Desarrollo e implementación alineada a necesidades del negocio." },
+        { "title": "Asesoría legal y contable TIC", "description": "Acompañamiento especializado para el sector tecnológico." },
+        { "title": "Proyectos financiados", "description": "Diseño y ejecución de proyectos con recursos públicos/privados." }
+      ],
+      "benefits": [
+        "Diagnósticos y planes accionables.",
+        "Mayor madurez digital y operativa.",
+        "Cumplimiento regulatorio y reducción de riesgos.",
+        "Optimización de costos y procesos."
+      ]
+    }
+  ],
+  "membershipBenefits": {
+    "estrategicos": [
+      "Acceso a oportunidades y proyectos estratégicos de transformación digital.",
+      "Conexión y networking con empresas líderes y entidades públicas/privadas.",
+      "Formación y capacitación especializada con descuentos preferenciales.",
+      "Representación y visibilidad en eventos nacionales e internacionales.",
+      "Acceso a recursos y herramientas tecnológicas con condiciones preferenciales.",
+      "Apoyo en internacionalización y exportación de servicios.",
+      "Programas de innovación, mentorías y crecimiento empresarial."
+    ],
+    "especiales": [
+      "15% en producción audiovisual (Visual Contact SAS).",
+      "20% en licencias ERP e implementación (Sysman S.A.S.).",
+      "10% en capacitaciones ERP SIGIEP (Grupo AAA Asesores S.A.S.).",
+      "15% en diseño web y hosting (Indiju SAS).",
+      "Descuentos cruzados entre miembros del clúster."
+    ]
+  },
+  "meta": {
+    "version": "2025.09",
+    "lastUpdated": "2025-09-07"
+  }
+}

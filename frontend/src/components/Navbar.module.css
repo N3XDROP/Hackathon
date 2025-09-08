@@ -1,21 +1,24 @@
+/* Barra superior */
 .topBar {
   background: linear-gradient(90deg, var(--pri) 0%, var(--sec) 100%);
   color: #fff;
   font-size: 13px;
   padding: 6px 0;
 }
-
 .topBarContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* Fondo navbar */
 .navbar {
   border-bottom: 1px solid #e8e8e8;
   background: var(--bg);
+  color: var(--text);
 }
 
+/* Ajuste de contenido */
 .navbarContent {
   display: flex;
   align-items: center;
@@ -23,28 +26,44 @@
   height: 68px;
 }
 
+/* Navegación escritorio */
 .navDesktop {
   display: none;
   gap: 8px;
   align-items: center;
 }
 
+/* Ítems escritorio */
+.navItem {
+  color: var(--link);
+}
+.navItem:hover {
+  color: var(--link-hover);
+}
+
+/* Botón login escritorio */
 .loginButton {
   padding: 10px 14px;
   border-radius: 10px;
-  background: var(--pri);
+  background: var(--btn-bg);
   color: #fff;
   font-weight: 700;
   margin-left: 6px;
 }
+.loginButton:hover {
+  background: var(--sec);
+}
 
+/* Toggle hamburguesa (sólo móvil) */
 .toggle {
   background: transparent;
   border: none;
   font-size: 26px;
-  color: var(--sec);
+  color: var(--toggle);
+  cursor: pointer;
 }
 
+/* Subrayado animado en desktop */
 .underline {
   position: absolute;
   left: 0;
@@ -57,48 +76,126 @@
   transition: transform 0.22s ease;
 }
 
+/* ==== Menú móvil ==== */
+
+/* Overlay */
 .mobileOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 50;
 }
 
+/* Panel lateral */
 .mobileMenu {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
   width: 78%;
   max-width: 360px;
+  height: 100vh;
   background: var(--bg);
-  box-shadow: -12px 0 30px rgba(0,0,0,0.15);
+  box-shadow: -12px 0 30px rgba(0, 0, 0, 0.15);
   padding: 16px;
-  display: grid;
-  gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
 }
 
+/* Header dentro del panel */
+.mobileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Lista vertical descendente */
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px 4px;
+}
+
+/* Ítems móviles */
 .mobileItem {
-  padding: 12px 10px;
+  display: block;
+  padding: 12px 14px;
   border-radius: 10px;
   font-weight: 600;
+  color: var(--link);
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease, transform 180ms ease;
+  transform-origin: top left;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: slideDown 260ms ease forwards;
+}
+
+/* Hover móvil */
+.mobileItem:hover {
+  background: var(--mobile-item-hover-bg);
+  color: var(--link-hover);
+  transform: translateY(0);
+}
+
+/* Animación en cascada */
+.mobileNav a:nth-child(1) { animation-delay: 0.04s; }
+.mobileNav a:nth-child(2) { animation-delay: 0.08s; }
+.mobileNav a:nth-child(3) { animation-delay: 0.12s; }
+.mobileNav a:nth-child(4) { animation-delay: 0.16s; }
+.mobileNav a:nth-child(5) { animation-delay: 0.20s; }
+.mobileNav a:nth-child(6) { animation-delay: 0.24s; }
+.mobileNav a:nth-child(7) { animation-delay: 0.28s; }
+.mobileNav a:nth-child(8) { animation-delay: 0.32s; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Acciones al final del panel */
+.mobileActions {
+  margin-top: auto;
+  display: grid;
+  gap: 8px;
+}
+
+.mobileThemeToggle {
+  padding: 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--sec);
+  cursor: pointer;
 }
 
 .mobileLogin {
-  margin-top: 8px;
   padding: 12px 10px;
   border-radius: 10px;
   font-weight: 700;
-  background: var(--pri);
+  background: var(--btn-bg);
   color: #fff;
   text-align: center;
 }
 
+/* ==== Mostrar menú escritorio en pantallas grandes ==== */
 @media (min-width: 900px) {
-  .navDesktop {
-    display: flex;
-  }
-  .toggle {
-    display: none;
-  }
+  .navDesktop { display: flex; }
+  .toggle { display: none; }
 }
 
+/* Botón dark/light */
+.darkToggle {
+  margin-left: 16px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--sec);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.darkToggle:hover {
+  background: var(--sec);
+  color: #fff;
+}
