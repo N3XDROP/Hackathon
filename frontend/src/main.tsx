@@ -8,6 +8,8 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Login from "./components/Login/login";
 import App from "./App";
+import Nosotros from "./pages/Nosotros";
+import Aliados from "./pages/Aliados";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -17,6 +19,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/api-test" element={<App />} />
+          <Route path="/quienes-somos" element={<Nosotros />}/>
+            <Route path="/aliados" element={<Aliados />}/>
         </Routes>
       </Layout>
     </BrowserRouter>

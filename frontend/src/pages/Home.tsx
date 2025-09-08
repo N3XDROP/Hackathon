@@ -20,6 +20,12 @@ export default function Home() {
               Conoce SumerTIC
             </Link>
             <Link
+              to="/aliados"
+              style={{ padding: "12px 16px", borderRadius: 10, border: "1px solid var(--sec)", color: "var(--sec)", fontWeight: 700 }}
+            >
+             Aliadoz
+            </Link>
+            <Link
               to="/contacto"
               style={{ padding: "12px 16px", borderRadius: 10, border: "1px solid var(--sec)", color: "var(--sec)", fontWeight: 700 }}
             >

@@ -1,0 +1,136 @@
+/* ===== Sección Aliados ===== */
+.alliesSection{
+  padding: 64px 0 40px;
+  background:
+    radial-gradient(900px 360px at 6% -6%, rgba(16,185,129,.06), transparent 60%),
+    radial-gradient(900px 360px at 94% 110%, rgba(16,185,129,.05), transparent 60%),
+    #fff;
+}
+.alliesInner{ max-width:1100px; margin:0 auto; padding:0 16px; }
+
+.alliesHeader{
+  text-align:center;
+  margin-bottom:22px;
+  display:grid;
+  justify-items:center;
+  gap:10px;
+}
+
+
+.alliesTitle{
+  margin:0;
+  font-size:clamp(1.9rem,4.2vw,2.4rem);
+  font-weight:650;
+  color:#414757;
+  letter-spacing:-.3px;
+}
+.alliesText{
+  margin:0 auto;
+  max-width:700px;
+  color:#374151;
+  font-size:1.08rem;
+  line-height:1.75;
+}
+
+/* ===== Carrusel de logos ===== */
+.logoScroller{
+  overflow:hidden;
+  position:relative;
+  margin-top:30px;
+  mask-image:linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image:linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+.logoTrack{
+  display:flex;
+  gap:28px;
+  padding:10px 8px;
+    /* evita colapso y permite que -50% se note */
+  min-width: max-content;
+
+  /* si quitas el inline style, deja aquí también */
+  animation: scrollLogos 28s linear infinite;
+  will-change: transform;
+}
+/*.logoScroller:hover .logoTrack{ animation-play-state: paused; } /* pausa al hover */
+
+.logoItem{
+  width:320px;              /* tarjeta consistente */
+  height:160px;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 10px 28px rgba(0,0,0,.06);
+  display:flex; align-items:center; justify-content:center;
+  padding:12px;
+  flex-shrink:0;
+  transition:transform .25s, box-shadow .25s;
+}
+.logoItem:hover{ transform:translateY(-4px); box-shadow:0 16px 36px rgba(0,0,0,.12); }
+
+.partnerLogo{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  filter:grayscale(25%);
+  opacity:.95;
+  transition:filter .25s, opacity .25s;
+}
+.logoItem:hover .partnerLogo{ filter:none; opacity:1; }
+
+@keyframes scrollLogos{
+  0%{ transform: translateX(0); }
+  100%{ transform: translateX(-50%); } /* porque está duplicado */
+}
+
+/* Respeta accesibilidad: reduce animaciones si el usuario lo pidió */
+@media (prefers-reduced-motion: reduce){
+  .logoTrack{ animation:none; }
+}
+
+/* ===== Logros ===== */
+.awardsSection{ padding:56px 0 72px; background:linear-gradient(180deg,#ffffff 0%, #f8fffb 100%); }
+.awardsInner{ max-width:1100px; margin:0 auto; padding:0 16px; }
+
+.awardGrid{
+  list-style:none; padding:0; margin:26px 0 0;
+  display:grid; gap:18px; grid-template-columns:repeat(4, 1fr);
+}
+@media (max-width:1000px){ .awardGrid{ grid-template-columns:repeat(2, 1fr); } }
+@media (max-width:560px){  .awardGrid{ grid-template-columns:1fr; } }
+
+/* Card */
+.awardCard{
+  background:#fff; border-radius:16px; padding:18px 16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  transition:transform .2s ease, box-shadow .2s ease;
+  display:flex; flex-direction:column; gap:10px; min-height: 360px;
+}
+.awardCard:hover{ transform:translateY(-4px); box-shadow:0 16px 36px rgba(0,0,0,.12); }
+
+/* Media contenedor fijo */
+.awardMedia{
+  width:100%; height:190px; border-radius:12px; overflow:hidden;
+  background:#f3f4f6; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+.awardImage{ width:100%; height:100%; object-fit:cover; }
+
+/* Texto */
+.awardTitle{
+  margin:0; color:#111827; 
+  font-weight:700;
+  font-size:clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height:1.25; min-height:3.2em; /* título parejo en 2 líneas */
+}
+.awardText{
+  margin:0; color:#4b5563;
+   line-height:1.65;
+    font-size:.98rem;
+  display:-webkit-box;
+   -webkit-line-clam:4;
+    -webkit-box-orient:vertical; 
+    overflow:hidden;
+}
+/* --- Modo forzado para ignorar reduced motion si lo necesitas --- */
+.forceMotion .logoTrack{
+  animation: scrollLogos 28s linear infinite !important;
+}
