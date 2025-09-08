@@ -8,8 +8,8 @@ export default function Footer() {
       <div className={`container ${styles.footerContent}`}>
         {/* Marca */}
         <div className={styles.brand}>
-          <Logo variant="alt" height={30} />
-          <strong>{branding.name}</strong>
+          <Logo variant="clean" height={100} />
+          
         </div>
 
         {/* Información */}
