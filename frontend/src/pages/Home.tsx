@@ -18,9 +18,7 @@ export default function Home() {
             <Link to="/quienes-somos" className={styles.btnPrimary}>
               Conoce SumerTIC
             </Link>
-            <Link to="/contacto" className={styles.btnSecondary}>
-              Contáctanos
-            </Link>
+
           </div>
         </div>
       </section>

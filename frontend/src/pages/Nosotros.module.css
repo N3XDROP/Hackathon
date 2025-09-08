@@ -1,0 +1,589 @@
+/* Hero */
+.hero {
+  position: relative;
+  padding: 6px 0;
+  text-align: center;
+}
+
+.heroImg {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+}
+
+.heroTitle {
+  position: absolute;
+  top: 35%;
+  left: 80%;
+  transform: translate(0%, -50%);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Secciones */
+.sectionSurface {
+  padding: 56px 0;
+  background: var(--surface);
+}
+
+.sectionDefault {
+  padding: 36px 0;
+  background: transparent;
+}
+
+/* Contenedores */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.centerBox {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* Cols */
+.left {
+  flex: 1;
+  text-align: center;
+}
+
+.right {
+  flex: 1;
+}
+
+/* Asegura que el contenedor de la imagen no se expanda */
+.borderWrapper {
+  display: inline-block; /* se ajusta al tamaño del contenido */
+  max-width: 430px; /* controla el ancho del borde+imagen */
+  border-radius: 12px;
+}
+
+/* Imagen con borde eléctrico */
+.figuree {
+  width: 100%;
+  max-width: 430px; /* mismo ancho que el wrapper */
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  margin: 0 auto; /* centrada en su columna */
+}
+
+/* Tipografía */
+.title {
+  margin: 0;
+  font-size: 2.4rem;
+  color: var(--sec);
+  text-align: left;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--sec);
+}
+
+.text {
+  margin: 16px 0;
+  font-size: 1.1rem; /* tamaño ~17.6px */
+  line-height: 1.6; /* más aire entre líneas */
+  color: #464c54; /* gris medio (Tailwind gray-600) */
+  font-family: "Inter", sans-serif; /* tipografía limpia */
+  font-weight: 400; /* peso normal, elegante */
+}
+
+.textCenter {
+  margin: 16px auto 0;
+}
+
+/* ===== Valores refinado ===== */
+.valuesSection {
+  padding: 56px 0;
+  background: #fff;
+}
+.valuesColLeft {
+  padding-left: 45px; /* ← mueve el texto e íconos hacia el centro */
+}
+
+.valuesGrid2 {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr; /* texto / imagen */
+  align-items: center;
+  gap: 50px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.valuesHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.valuesAccent {
+  width: 8px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--sec, #20c25c), #06d633);
+}
+
+.valuesTitleBig {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 4rem);
+  font-weight: 700;
+  color: #373e48;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.valuesList {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: grid;
+  gap: 26px;
+}
+
+.valueItem {
+  display: grid;
+  grid-template-columns: 38px auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.valueIcon {
+  font-size: 28px;
+  line-height: 1;
+  transform: translateY(2px);
+  color: var(--sec, #10b981);
+}
+
+.valueHeading {
+  margin: 0;
+  color: #10a82f; /* usa var(--sec) si prefieres */
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+}
+
+.valueText {
+  margin: 6px 0 0;
+  color: #585c64;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* Imagen con acento */
+.valuesColRight {
+  display: flex;
+  justify-content: center;
+}
+
+.valuesFigure {
+  position: relative;
+  display: inline-block;
+}
+
+.valuesImage {
+  width: 100%;
+  max-width: 580px;
+  border-radius: 14px;
+  display: block;
+  object-fit: cover;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* barra/acento bajo la imagen */
+.imageAccent {
+  position: absolute;
+  left: 12%;
+  bottom: -10px;
+  width: 56px;
+  height: 6px;
+  border-radius: 999px;
+  background: #35ac11; /* acento cálido */
+}
+
+/* Hover sutil */
+.valueItem:hover .valueHeading {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Responsive */
+@media (max-width: 1080px) {
+  .valuesGrid2 {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .valuesColRight {
+    order: 2; /* texto arriba, imagen abajo */
+  }
+  .valuesImage {
+    max-width: 680px;
+  }
+}
+
+/* CTA */
+.cta {
+  padding: 36px 0;
+  background: linear-gradient(90deg, var(--pri) 0%, var(--sec) 100%);
+  color: #fff;
+}
+
+.ctaTitle {
+  margin: 0;
+}
+
+.ctaText {
+  margin: 0;
+}
+
+.ctaBtn {
+  display: inline-block;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--sec);
+  font-weight: 700;
+  margin-top: 12px;
+  text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .title {
+    text-align: center;
+  }
+
+  .heroTitle {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.25rem;
+  }
+
+  .valuesGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.titlee {
+  margin: 0 0 16px;
+  font-size: 2.5rem; /* tamaño grande */
+  font-weight: 700; /* negrita */
+  color: #1f2937; /* gris oscuro casi negro */
+  text-align: left;
+  font-family: "Inter", sans-serif; /* asegúrate de tenerla importada */
+  line-height: 1.2;
+}
+/* vision */
+.sectionBg {
+  padding: 36px 0;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+.cardsWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* dos columnas iguales */
+  gap: 24px; /* espacio entre misión y visión */
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 16px; /* aire lateral */
+}
+
+.misionCard,
+.visionCard {
+  color: #fff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.misionCard {
+  background: #1dd56d; /* azul */
+}
+
+.visionCard {
+  background: #1dd56d; /* verde */
+}
+
+.visionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.visionIcon {
+  font-size: 1.5rem;
+}
+
+.visionTitle {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.visionText {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .cardsWrapper {
+    grid-template-columns: 1fr; /* apiladas en móvil */
+    gap: 16px;
+  }
+}
+/* ===== Propósito Superior ===== */
+.purpose {
+  padding: 72px 0;
+  background: radial-gradient(
+      1200px 500px at 10% -10%,
+      rgba(16, 185, 129, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 400px at 90% 120%,
+      rgba(16, 185, 129, 0.06),
+      transparent 60%
+    ),
+    #ffffff;
+}
+
+.purposeInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+  text-align: center;
+}
+
+/* Badge pill */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #0f973a;
+  font-weight: 600;
+  font-size: 2.1rem;
+  margin-bottom: 14px;
+}
+
+/* Título */
+.purposeTitle {
+  margin: 0 0 12px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.3px;
+}
+
+/* Texto */
+.purposeText {
+  margin: 0 auto 28px;
+  max-width: 820px;
+  color: #4b5563;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+/* Pilares */
+.purposeGrid {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.purposeItem {
+  display: grid;
+  grid-template-columns: 42px auto;
+  gap: 12px;
+  align-items: start;
+  padding: 22px 20px;
+  border-radius: 14px;
+  background: #fff; /* el fondo sigue blanco */
+
+  box-shadow: 0 6px 16px rgba(182, 75, 75, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.purposeItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.purposeIcon {
+  width: 28px;
+  height: 28px;
+  color: #10b981; /* var(--sec) si ya la usas */
+  flex-shrink: 0;
+}
+
+.purposeItem h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  color: #047857; /* verde oscuro */
+  font-weight: 700;
+}
+
+.purposeItem p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 0.98rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .purposeGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .purposeItem {
+    text-align: left;
+  }
+}
+/* ===== Gobernanza (versión ligera) ===== */
+.govLite {
+  padding: 64px 0;
+  background: radial-gradient(
+      900px 360px at 6% -6%,
+      rgba(16, 185, 129, 0.07),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 360px at 94% 110%,
+      rgba(16, 185, 129, 0.06),
+      transparent 60%
+    ),
+    #fff;
+}
+
+.govLiteInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.govLiteHeader {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.govLiteBadge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12); /* usa var(--sec) si tienes */
+  color: #0f973a;
+  font-weight: 300;
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.govLiteTitle {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: #353a42;
+  letter-spacing: -0.3px;
+}
+
+.govLiteText {
+  margin: 0 auto;
+  max-width: 860px;
+  text-align: center;
+  color: #4b5563;
+  font-size: 1.06rem;
+  line-height: 1.7;
+}
+.govLiteHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 👈 centra todo el bloque */
+  gap: 12px; /* espacio entre acento y texto */
+  margin-bottom: 20px;
+}
+
+.valuesAccent {
+  display: inline-block;
+  width: 12px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #10b981, #059669);
+}
+
+/* Pills de principios */
+.govPills {
+  list-style: none;
+  padding: 0;
+  margin: 26px auto 0;
+  max-width: 860px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.govPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    #e9fbf3 0%,
+    #f7fffb 100%
+  ); /* degradado verdoso */
+  color: #065f46;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.1);
+  justify-content: center;
+}
+
+.pillIcon {
+  width: 20px;
+  height: 20px;
+  color: #10b981;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .govPills {
+    grid-template-columns: 1fr;
+  }
+}

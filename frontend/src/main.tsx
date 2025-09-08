@@ -10,6 +10,8 @@ import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Login from "./components/Login/login";
 import App from "./App";
+import Nosotros from "./pages/Nosotros";
+import Aliados from "./pages/Aliados";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -21,7 +23,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route path="/servicios" element={<Services />} />
           <Route path="/servicios/:serviceId" element={<ServiceDetail />} />
           <Route path="/api-test" element={<App />} />
+          <Route path="/quienes-somos" element={<Nosotros />}/>
+            <Route path="/aliados" element={<Aliados />}/>
           <Route path="*" element={<div style={{padding:24}}>404 - Página no encontrada</div>} />
+
         </Routes>
       </Layout>
     </BrowserRouter>
