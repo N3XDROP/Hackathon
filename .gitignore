@@ -1,4 +1,6 @@
-# Node / frontend
+########################################
+# Node / Frontend
+########################################
 node_modules/
 dist/
 build/
@@ -7,25 +9,72 @@ build/
 .next/
 .eslintcache
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
+########################################
 # Python / Flask
+########################################
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
 .flask_session/
-.env
+
+# Virtualenvs
 .venv/
-env/
 venv/
+env/
 .genai/
 chat/genai/
 
-# Proyecto
+########################################
+# Proyecto (común)
+########################################
 uploads/
-.DS_Store
-.idea/
-.vscode/
+chat/uploads/
 coverage/
 .nyc_output/
+coverage-final.json
 
-# Locks - mantenemos los de cada app; ignoramos el de la raíz si aparece por error
+# SO / IDE
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+.Spotlight-V100
+.Trashes
+desktop.ini
+
+.idea/
+.vscode/
+*.code-workspace
+
+########################################
+# Env files
+# - Ignora todas las variantes por defecto…
+########################################
+**/.env*
+# …pero mantiene los .env base de cada app
+!backend/.env
+!frontend/.env
+!chat/.env
+# …y siempre mantener los ejemplos
+!**/.env.example
+!**/.env.sample
+
+########################################
+# Locks
+# - Mantener los lockfiles dentro de cada app
+# - Ignorar el de la RAÍZ si aparece por error
+########################################
 /package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
