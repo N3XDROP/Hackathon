@@ -29,6 +29,10 @@ function Login() {
 
             const data = await response.json();
             setMensaje(data.message);
+
+            if (response.ok) {
+                window.location.href = "http://127.0.0.1:5000";
+            }
         } catch (error) {
             console.error("Error en el login", error);
             setMensaje("❌ Error al conectar con el servidor.");
