@@ -1,23 +1,23 @@
-import "reflect-metadata";
-import dotenv from 'dotenv';
-import { AppDataSource } from './config/database';
-import { ServerConstants } from "./constants";
-import app from "./app";
-import { seedNewAdmin } from "./seeds";
+// backend/src/index.ts
+import 'dotenv/config';           // <-- PRIMERO, antes de cualquier otro import
+import 'reflect-metadata';
 
-dotenv.config();
+import { AppDataSource } from './config/database';
+import { ServerConstants } from './constants';
+import app from './app';
+import { seedNewAdmin } from './seeds';
 
 AppDataSource.initialize()
-	.then(async () => {
-		console.clear();
+  .then(async () => {
+    console.clear();
 
-		await seedNewAdmin();
+    await seedNewAdmin();
 
-		app.listen(ServerConstants.PORT, () => {
-			console.log(`🚀 Server is running on port ${ServerConstants.PORT}`);
-		});
-		console.log("📦 Data Source has been initialized!");
-	})
-	.catch((error) => {
-		console.log("❌ Error during Data Source initialization:", error);
-	});
+    app.listen(ServerConstants.PORT, () => {
+      console.log(`🚀 Server is running on port ${ServerConstants.PORT}`);
+    });
+    console.log('📦 Data Source has been initialized!');
+  })
+  .catch((error) => {
+    console.log('❌ Error during Data Source initialization:', error);
+  });

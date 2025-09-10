@@ -73,11 +73,11 @@
 
       0%,
       100% {
-        transform: translateY(0px) rotate(0deg);
+        transform: translateY(0) rotate(0)
       }
 
       50% {
-        transform: translateY(-20px) rotate(180deg);
+        transform: translateY(-20px) rotate(180deg)
       }
     }
 
@@ -91,11 +91,48 @@
     }
 
     .header p {
-      margin: 12px 0 0 0;
+      margin: 12px 0 0;
       font-size: 1.1rem;
-      opacity: 0.9;
+      opacity: .9;
       position: relative;
       z-index: 1;
+    }
+
+    /* ── pequeño bloque superior con usuario y salir ── */
+    .top-actions {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      z-index: 2;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, .2);
+      border: 1px solid rgba(255, 255, 255, .35);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: .8rem;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      background: #fff;
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
 
     .content {
@@ -120,7 +157,7 @@
       padding: 32px;
       margin-bottom: 24px;
       box-shadow: var(--shadow-md);
-      transition: all 0.3s ease;
+      transition: all .3s ease;
     }
 
     .card:hover {
@@ -151,7 +188,7 @@
       font-weight: 500;
       color: var(--text-primary);
       margin-bottom: 8px;
-      font-size: 0.95rem;
+      font-size: .95rem;
     }
 
     input[type="text"],
@@ -162,7 +199,7 @@
       border: 2px solid var(--border-color);
       border-radius: 8px;
       font-size: 1rem;
-      transition: all 0.3s ease;
+      transition: all .3s ease;
       background: var(--secondary-color);
     }
 
@@ -171,7 +208,7 @@
     textarea:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(1, 211, 124, 0.1);
+      box-shadow: 0 0 0 3px rgba(1, 211, 124, .1);
       background: white;
     }
 
@@ -187,14 +224,14 @@
 
     input[type="file"]::-webkit-file-upload-button {
       background: var(--primary-color);
-      color: white;
+      color: #fff;
       border: none;
       padding: 8px 16px;
       border-radius: 6px;
       cursor: pointer;
       margin-right: 12px;
       font-weight: 500;
-      transition: background 0.3s ease;
+      transition: background .3s ease;
     }
 
     input[type="file"]::-webkit-file-upload-button:hover {
@@ -203,14 +240,14 @@
 
     button {
       background: var(--gradient-primary);
-      color: white;
+      color: #fff;
       border: none;
       padding: 16px 32px;
       border-radius: 12px;
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all .3s ease;
       box-shadow: var(--shadow-md);
       width: 100%;
       margin-top: 20px;
@@ -251,7 +288,7 @@
     .status-badge {
       padding: 6px 12px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: .85rem;
       font-weight: 600;
       text-transform: uppercase;
     }
@@ -283,9 +320,9 @@
     .info-label {
       font-weight: 600;
       color: var(--text-secondary);
-      font-size: 0.85rem;
+      font-size: .85rem;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: .5px;
     }
 
     .info-value {
@@ -328,14 +365,21 @@
     .document-status {
       padding: 4px 8px;
       border-radius: 12px;
-      font-size: 0.8rem;
+      font-size: .8rem;
       font-weight: 500;
     }
 
     .status-loaded {
-      background: rgba(29, 215, 138, 0.2);
+      background: rgba(29, 215, 138, .2);
       color: #015351;
     }
+
+    .status-missing {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* <-- agregada */
 
     details {
       margin-top: 20px;
@@ -363,7 +407,7 @@
       padding: 20px;
       margin: 0;
       overflow-x: auto;
-      font-size: 0.9rem;
+      font-size: .9rem;
       line-height: 1.5;
     }
 
@@ -371,11 +415,21 @@
       color: var(--text-muted);
     }
 
-    code {
-      background: var(--secondary-color);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.9rem;
+    /* listados admin/comité */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #fafafa;
     }
 
     @media (max-width: 768px) {
@@ -410,32 +464,44 @@
 
   <div class="container">
     <div class="header">
+      <div class="top-actions">
+        {% if user %}
+        <span class="pill">{{ user.email }} · {{ role }}</span>
+        <button class="logout-btn" onclick="window.location.href='/auth/logout'">Salir</button>
+        {% endif %}
+      </div>
       <h1>Análisis Inteligente de Documentos</h1>
       <p>Sistema de procesamiento con IA multimodal (Ollama)</p>
     </div>
 
     <div class="content">
       {% if mensaje %}
-      <div class="msg">
-        <em>{{ mensaje }}</em>
+      <div class="msg"><em>{{ mensaje }}</em></div>
+      {% endif %}
+
+      {# --- Vista sin sesión --- #}
+      {% if not user %}
+      <div class="card">
+        <h2>Acceso</h2>
+        <p class="muted">Para usar este módulo, inicia sesión desde el portal principal.</p>
       </div>
       {% endif %}
 
+      {# --- VISTA: USUARIO --- #}
+      {% if user and role == 'user' %}
+      <!-- ======== VISTA: USUARIO ======== -->
       <form action="/analizar" method="post" enctype="multipart/form-data" class="card">
         <div class="form-section">
           <div class="section-title">Información de la Entidad</div>
-
           <div class="form-group">
             <label>Descripción de la entidad (misión, visión, actividades TIC):</label>
             <textarea name="descripcion_entidad"
               placeholder="Describe la misión, visión y actividades relacionadas con TIC de tu entidad..."></textarea>
           </div>
-
           <div class="form-group">
             <label>Tipo de entidad (natural o jurídica):</label>
             <input type="text" name="tipo_entidad" placeholder="Ej: Persona jurídica, Persona natural" />
           </div>
-
           <div class="form-group">
             <label>Objeto social relacionado con TIC:</label>
             <input type="text" name="objeto_social"
@@ -445,17 +511,14 @@
 
         <div class="form-section">
           <div class="section-title">Documentos Requeridos</div>
-
           <div class="form-group">
             <label>RUT actualizado:</label>
             <input type="file" name="rut" accept=".pdf,.png,.jpg,.jpeg" />
           </div>
-
           <div class="form-group">
             <label>Certificado de Cámara de Comercio (vigente):</label>
             <input type="file" name="camara_comercio" accept=".pdf,.png,.jpg,.jpeg" />
           </div>
-
           <div class="form-group">
             <label>Cédula del representante legal:</label>
             <input type="file" name="cedula" accept=".pdf,.png,.jpg,.jpeg" />
@@ -464,12 +527,10 @@
 
         <div class="form-section">
           <div class="section-title">Documentos Firmados</div>
-
           <div class="form-group">
             <label>Carta de Intención de Afiliación (firmada):</label>
             <input type="file" name="carta_intencion" accept=".pdf,.png,.jpg,.jpeg" />
           </div>
-
           <div class="form-group">
             <label>Carta de Aceptación de Estatutos, Reglamentos Internos y Políticas (firmada):</label>
             <input type="file" name="carta_aceptacion" accept=".pdf,.png,.jpg,.jpeg" />
@@ -478,22 +539,18 @@
 
         <div class="form-section">
           <div class="section-title">Antecedentes del Representante Legal</div>
-
           <div class="form-group">
             <label>Antecedentes Contraloría:</label>
             <input type="file" name="antecedentes_contraloria" accept=".pdf,.png,.jpg,.jpeg" />
           </div>
-
           <div class="form-group">
             <label>Antecedentes Procuraduría:</label>
             <input type="file" name="antecedentes_procuraduria" accept=".pdf,.png,.jpg,.jpeg" />
           </div>
-
           <div class="form-group">
             <label>Antecedentes Policía:</label>
             <input type="file" name="antecedentes_policia" accept=".pdf,.png,.jpg,.jpeg" />
           </div>
-
           <div class="form-group">
             <label>Antecedentes RNMC:</label>
             <input type="file" name="antecedentes_rnmc" accept=".pdf,.png,.jpg,.jpeg" />
@@ -502,12 +559,10 @@
 
         <div class="form-section">
           <div class="section-title">Información Adicional</div>
-
           <div class="form-group">
             <label>Dirección física:</label>
             <input type="text" name="direccion_fisica" placeholder="Dirección completa de la entidad" />
           </div>
-
           <div class="form-group">
             <label>Residencia en Boyacá:</label>
             <input type="text" name="residencia_boyaca" placeholder="Información sobre residencia en Boyacá" />
@@ -546,10 +601,7 @@
           <h3>⚠ Documentos Faltantes</h3>
           <ul>
             {% for doc in ultimo.faltan_documentos %}
-            <li>
-              <span>{{ doc }}</span>
-              <span class="document-status status-missing">Faltante</span>
-            </li>
+            <li><span>{{ doc }}</span><span class="document-status status-missing">Faltante</span></li>
             {% endfor %}
           </ul>
         </div>
@@ -584,38 +636,21 @@
         <div class="document-list">
           <h3>📄 Estado de Documentos</h3>
           <ul>
-            <li>
-              <span><strong>RUT:</strong></span>
-              <span class="document-status {{ 'status-loaded' if ultimo.resultados.rut else 'status-missing' }}">
-                {{ ultimo.resultados.rut.nombre if ultimo.resultados.rut else 'No cargado' }}
-              </span>
-            </li>
-            <li>
-              <span><strong>Contraloría:</strong></span>
-              <span
-                class="document-status {{ 'status-loaded' if ultimo.resultados.contraloria else 'status-missing' }}">
-                {{ ultimo.resultados.contraloria.nombre if ultimo.resultados.contraloria else 'No cargado' }}
-              </span>
-            </li>
-            <li>
-              <span><strong>Procuraduría:</strong></span>
-              <span
-                class="document-status {{ 'status-loaded' if ultimo.resultados.procuraduria else 'status-missing' }}">
-                {{ ultimo.resultados.procuraduria.nombre if ultimo.resultados.procuraduria else 'No cargado' }}
-              </span>
-            </li>
-            <li>
-              <span><strong>Policía:</strong></span>
-              <span class="document-status {{ 'status-loaded' if ultimo.resultados.policia else 'status-missing' }}">
-                {{ ultimo.resultados.policia.nombre if ultimo.resultados.policia else 'No cargado' }}
-              </span>
-            </li>
-            <li>
-              <span><strong>RNMC:</strong></span>
-              <span class="document-status {{ 'status-loaded' if ultimo.resultados.rnmc else 'status-missing' }}">
-                {{ ultimo.resultados.rnmc.nombre if ultimo.resultados.rnmc else 'No cargado' }}
-              </span>
-            </li>
+            <li><span><strong>RUT:</strong></span><span
+                class="document-status {{ 'status-loaded' if ultimo.resultados.rut else 'status-missing' }}">{{
+                ultimo.resultados.rut.nombre if ultimo.resultados.rut else 'No cargado' }}</span></li>
+            <li><span><strong>Contraloría:</strong></span><span
+                class="document-status {{ 'status-loaded' if ultimo.resultados.contraloria else 'status-missing' }}">{{
+                ultimo.resultados.contraloria.nombre if ultimo.resultados.contraloria else 'No cargado' }}</span></li>
+            <li><span><strong>Procuraduría:</strong></span><span
+                class="document-status {{ 'status-loaded' if ultimo.resultados.procuraduria else 'status-missing' }}">{{
+                ultimo.resultados.procuraduria.nombre if ultimo.resultados.procuraduria else 'No cargado' }}</span></li>
+            <li><span><strong>Policía:</strong></span><span
+                class="document-status {{ 'status-loaded' if ultimo.resultados.policia else 'status-missing' }}">{{
+                ultimo.resultados.policia.nombre if ultimo.resultados.policia else 'No cargado' }}</span></li>
+            <li><span><strong>RNMC:</strong></span><span
+                class="document-status {{ 'status-loaded' if ultimo.resultados.rnmc else 'status-missing' }}">{{
+                ultimo.resultados.rnmc.nombre if ultimo.resultados.rnmc else 'No cargado' }}</span></li>
           </ul>
         </div>
 
@@ -624,6 +659,300 @@
           <pre>{{ ultimo | tojson(indent=2) }}</pre>
         </details>
       </div>
+      {% endif %}
+      {% endif %}
+
+      {# --- VISTA: ADMIN --- #}
+      {% if user and role == 'admin' %}
+      <!-- ======== VISTA: ADMIN ======== -->
+      <div class="card">
+        <div class="section-title">Revisión de documentos de usuarios</div>
+        <p class="muted">Selecciona un usuario para agregar, reemplazar o quitar documentos. Luego, si todo está OK,
+          envía al Comité.</p>
+
+        <div class="form-group">
+          <label>Usuario:</label>
+          <select id="admin-user-select"></select>
+        </div>
+
+        <div class="form-group">
+          <label>Agregar documento al usuario seleccionado</label>
+          <input type="file" id="admin-add-file" />
+          <input type="text" id="admin-add-field" placeholder="tipo: rut, cedula, camara_comercio, ..." />
+          <select id="admin-add-state">
+            <option value="pendientes">pendientes</option>
+            <option value="revisados">revisados</option>
+            <option value="validados">validados</option>
+          </select>
+          <button type="button" onclick="adminAgregar()">Agregar</button>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" onclick="enviarAComite()">Enviar a Comité (seleccionados)</button>
+        </div>
+
+        <div class="document-list" style="margin-top:16px;">
+          <h3>Expedientes</h3>
+          <table id="tabla-admin">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Documento</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+                <th><input type="checkbox" onclick="toggleAll(this)" /></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <script>
+        const selUser = document.getElementById('admin-user-select');
+        const tbody = document.querySelector('#tabla-admin tbody');
+
+        async function cargarUsuarios() {
+          const r = await fetch('/api/admin/users');
+          const data = await r.json();
+          selUser.innerHTML = '';
+          (data.items || []).forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.id;
+            opt.textContent = `${u.email} (id:${u.id})`;
+            selUser.appendChild(opt);
+          });
+          if (selUser.value) cargarListadoPorUsuario(selUser.value);
+        }
+
+        selUser.addEventListener('change', () => cargarListadoPorUsuario(selUser.value));
+
+        async function cargarListadoPorUsuario(userId) {
+          const r = await fetch(`/api/admin/user/${encodeURIComponent(userId)}/files?state=all`);
+          const data = await r.json();
+          tbody.innerHTML = '';
+
+          (data.items || []).forEach(item => {
+            const tr = document.createElement('tr');
+
+            const tdUser = document.createElement('td');
+            tdUser.textContent = item.userEmail || `user_${item.userId}`;
+
+            const tdDoc = document.createElement('td');
+            tdDoc.textContent = (item.displayName || item.originalName || item.name || '-');
+
+            const tdState = document.createElement('td');
+            tdState.textContent = item.state || '-';
+
+            const tdAcc = document.createElement('td');
+
+            const btnReemp = document.createElement('button');
+            btnReemp.type = 'button';
+            btnReemp.textContent = 'Reemplazar';
+            btnReemp.onclick = () => adminReemplazar(item);
+
+            const btnDel = document.createElement('button');
+            btnDel.type = 'button';
+            btnDel.style.marginLeft = '8px';
+            btnDel.textContent = 'Quitar';
+            btnDel.onclick = () => adminQuitar(item);
+
+            tdAcc.appendChild(btnReemp);
+            tdAcc.appendChild(btnDel);
+
+            const tdSel = document.createElement('td');
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.dataset.id = item.id;
+            tdSel.appendChild(cb);
+
+            tr.appendChild(tdUser);
+            tr.appendChild(tdDoc);
+            tr.appendChild(tdState);
+            tr.appendChild(tdAcc);
+            tr.appendChild(tdSel);
+            tbody.appendChild(tr);
+          });
+        }
+
+        function toggleAll(cb) {
+          document.querySelectorAll('#tabla-admin tbody input[type=checkbox]')
+            .forEach(x => x.checked = cb.checked);
+        }
+
+        async function adminAgregar() {
+          const userId = selUser.value;
+          if (!userId) return alert('Selecciona un usuario');
+          const file = document.getElementById('admin-add-file').files[0];
+          const field = document.getElementById('admin-add-field').value.trim();
+          const state = document.getElementById('admin-add-state').value;
+          if (!file) return alert('Elige un archivo');
+
+          const fd = new FormData();
+          fd.append('file', file);
+          if (field) fd.append('field', field);
+          fd.append('state', state);
+
+          const r = await fetch(`/api/admin/user/${encodeURIComponent(userId)}/files`, {
+            method: 'POST',
+            body: fd
+          });
+          const data = await r.json();
+          if (!data.ok) return alert('Error al subir: ' + (data.error || ''));
+          alert('Subido');
+          cargarListadoPorUsuario(userId);
+        }
+
+        function inferFieldFromName(name) {
+          if (name.includes('__')) return name.split('__', 1)[0];
+          const low = name.toLowerCase();
+          if (low.includes('rut')) return 'rut';
+          if (low.includes('camara') || low.includes('cámara')) return 'camara_comercio';
+          if (low.includes('cedul') || low.includes('nuip')) return 'cedula';
+          if (low.includes('contralor')) return 'antecedentes_contraloria';
+          if (low.includes('procuradur')) return 'antecedentes_procuraduria';
+          if (low.includes('polic')) return 'antecedentes_policia';
+          if (low.includes('rnmc')) return 'antecedentes_rnmc';
+          if (low.includes('intenci')) return 'carta_intencion';
+          if (low.includes('estatuto') || low.includes('aceptaci')) return 'carta_aceptacion';
+          return 'documento';
+        }
+
+        async function adminReemplazar(item) {
+          const picker = document.createElement('input');
+          picker.type = 'file';
+          picker.style.display = 'none';
+          document.body.appendChild(picker);
+          picker.addEventListener('change', async () => {
+            if (!picker.files[0]) return;
+            const field = item.field || inferFieldFromName(item.name);
+            const fd = new FormData();
+            fd.append('file', picker.files[0]);
+            fd.append('field', field);
+            fd.append('state', item.state);
+
+            const rUp = await fetch(`/api/admin/user/${encodeURIComponent(item.userId)}/files`, {
+              method: 'POST',
+              body: fd
+            });
+            const dataUp = await rUp.json();
+            if (!dataUp.ok) { alert('Error al subir reemplazo'); picker.remove(); return; }
+
+            const fname = item.id.split('/').slice(2).join('/');
+            const rDel = await fetch(`/api/admin/user/${encodeURIComponent(item.userId)}/files/${encodeURIComponent(fname)}?state=${encodeURIComponent(item.state)}`, {
+              method: 'DELETE'
+            });
+            const dataDel = await rDel.json();
+            if (!dataDel.ok) { alert('Subido, pero no se pudo quitar el antiguo'); }
+
+            alert('Reemplazado');
+            cargarListadoPorUsuario(item.userId);
+            picker.remove();
+          });
+          picker.click();
+        }
+
+        async function adminQuitar(item) {
+          if (!confirm('¿Quitar este documento?')) return;
+          const fname = item.id.split('/').slice(2).join('/');
+          const r = await fetch(`/api/admin/user/${encodeURIComponent(item.userId)}/files/${encodeURIComponent(fname)}?state=${encodeURIComponent(item.state)}`, {
+            method: 'DELETE'
+          });
+          const data = await r.json();
+          alert(data.ok ? 'Quitado' : ('Error: ' + (data.error || '')));
+          cargarListadoPorUsuario(item.userId);
+        }
+
+        async function enviarAComite() {
+          const ids = Array.from(document.querySelectorAll('#tabla-admin tbody input[type=checkbox]:checked'))
+            .map(x => x.dataset.id)
+            .filter(id => id.startsWith('pendientes/'));
+          if (!ids.length) return alert('Selecciona al menos un documento en pendientes');
+          const r = await fetch('/api/admin/submit-to-committee', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids })
+          });
+          const data = await r.json();
+          alert(data.ok ? 'Enviado' : 'Error');
+          if (selUser.value) cargarListadoPorUsuario(selUser.value);
+        }
+
+        cargarUsuarios();
+      </script>
+      {% endif %}
+
+      {# --- VISTA: COMITÉ --- #}
+      {% if user and role == 'comite' %}
+      <!-- ======== VISTA: COMITÉ ======== -->
+      <div class="card">
+        <div class="section-title">Bandeja del Comité</div>
+        <p class="muted">Valida expedientes revisados por Admin: aprobar o rechazar con observaciones.</p>
+        <button type="button" onclick="cargarBandeja()">Cargar bandeja</button>
+
+        <div class="document-list" style="margin-top:16px;">
+          <h3>Pendientes</h3>
+          <table id="tabla-comite">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Expediente</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <script>
+        async function cargarBandeja() {
+          const r = await fetch('/api/committee/reviews');
+          const data = await r.json();
+          const tbody = document.querySelector('#tabla-comite tbody');
+          tbody.innerHTML = '';
+
+          (data.items || []).forEach(item => {
+            const tr = document.createElement('tr');
+
+            const tdUser = document.createElement('td');
+            tdUser.textContent = item.userEmail || '-';
+
+            const tdExp = document.createElement('td');
+            tdExp.textContent = item.expediente || '-';
+
+            const tdAcc = document.createElement('td');
+            const btnOk = document.createElement('button');
+            btnOk.textContent = 'Aprobar';
+            btnOk.type = 'button';
+            btnOk.addEventListener('click', () => decidir(item.id, 'aprobado'));
+            const btnNo = document.createElement('button');
+            btnNo.textContent = 'Rechazar';
+            btnNo.type = 'button';
+            btnNo.style.marginLeft = '8px';
+            btnNo.addEventListener('click', () => decidir(item.id, 'rechazado'));
+
+            tdAcc.appendChild(btnOk);
+            tdAcc.appendChild(btnNo);
+
+            tr.appendChild(tdUser);
+            tr.appendChild(tdExp);
+            tr.appendChild(tdAcc);
+            tbody.appendChild(tr);
+          });
+        }
+
+        async function decidir(id, decision) {
+          const r = await fetch('/api/committee/reviews/' + encodeURIComponent(id) + '/decision', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ decision })
+          });
+          const data = await r.json();
+          alert(data.ok ? 'Hecho' : 'Error');
+          cargarBandeja();
+        }
+      </script>
       {% endif %}
     </div>
   </div>

@@ -6,14 +6,13 @@ function Login() {
     const [password, setPassword] = useState("");
     const [mensaje, setMensaje] = useState("");
 
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
     const handleLogin = async () => {
-        // ✅ VALIDACIÓN: No permitir campos vacíos
         if (!email || !password) {
             setMensaje("⚠️ Completa todos los campos.");
             return;
         }
-
-        // ✅ VALIDACIÓN: Formato de correo correcto
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setMensaje("⚠️ Ingresa un correo válido.");
@@ -21,23 +20,26 @@ function Login() {
         }
 
         try {
-            const response = await fetch("http://localhost:4000/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+            const resp = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include", // por si mantienes sesión en backend también
+            body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
-            setMensaje(data.message);
+            const data = await resp.json();
+            setMensaje(data?.message || "");
 
-            if (response.ok) {
-                window.location.href = "http://127.0.0.1:5000";
+            if (resp.ok && data?.ok && data?.redirect) {
+            window.location.href = data.redirect; // 🔁 SSO hacia Flask
+            } else {
+            setMensaje(data?.message || "❌ Credenciales inválidas.");
             }
         } catch (error) {
             console.error("Error en el login", error);
             setMensaje("❌ Error al conectar con el servidor.");
         }
-    };
+        };
 
     return (
         <div className="login-container">
