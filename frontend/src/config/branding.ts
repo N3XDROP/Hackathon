@@ -11,7 +11,7 @@ export const branding = {
     { to: "/quienes-somos", label: "Quiénes Somos" },
     { to: "/servicios", label: "Servicios" },
     { to: "/aliados", label: "Aliados" },
-    { to: "/como-unirse", label: "Como unirse" },
+    { to: "/normativa", label: "Normativa y Cuotas" },
   ],
   colors: {
     pri: "#01D37C",
