@@ -1,0 +1,184 @@
+/* ================================
+   Normativa y Cuotas (dark/light)
+   ================================ */
+
+.wrap { padding: 24px 0; }
+
+/* ---------- Hero / Header ---------- */
+.header { margin-bottom: 16px; }
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.heroLeft { display: flex; align-items: center; gap: 12px; }
+
+.heroIcon {
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(1,211,124,.12), transparent);
+}
+
+.title { margin: 0 0 2px; font-weight: 800; letter-spacing: -0.2px; color: var(--text); }
+
+.lead { margin: 0; opacity: .78; }
+
+.heroActions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ---------- Sección ---------- */
+.section { margin-bottom: 16px; }
+
+.sectionHead {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sectionTitleWrap { display: flex; align-items: center; gap: 10px; }
+
+.bubble {
+  display: inline-grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.sectionTitle { margin: 0; font-size: 1.15rem; color: var(--text); }
+
+.headActions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ---------- Buttons / Links ---------- */
+.link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--sec-2); text-decoration: none;
+  padding: 6px 10px; border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  transition: filter .15s ease, background-color .15s ease, border-color .15s ease;
+}
+.link:hover { filter: brightness(.98); }
+
+.toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--btn-bg); color: #fff;
+  border: 1px solid transparent; border-radius: 10px;
+  padding: 8px 12px; cursor: pointer;
+  transition: transform .06s ease, filter .15s ease;
+}
+.toggle:hover { filter: brightness(.97); }
+.toggle:active { transform: translateY(1px); }
+
+.chev { transition: transform .18s ease; }
+.chevOpen { transform: rotate(180deg); }
+
+/* botón fantasma */
+.ghostBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: var(--sec-2);
+  border: 1px solid var(--card-border); border-radius: 10px;
+  padding: 8px 12px; cursor: pointer;
+  transition: background-color .15s ease, filter .15s ease;
+}
+.ghostBtn:hover { background: rgba(0,0,0,.04); }
+html[data-theme="dark"] .ghostBtn:hover { background: rgba(255,255,255,.06); }
+
+/* ---------- Lists / Text ---------- */
+.list { margin: 0; padding-left: 18px; }
+.list li { margin: 4px 0; }
+
+.muted { opacity: .78; }
+
+/* ---------- Table ---------- */
+.tableWrap {
+  overflow: auto;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: var(--card-bg);
+}
+
+.table { width: 100%; border-collapse: collapse; color: var(--text); }
+.table td { padding: 12px 14px; vertical-align: top; }
+.table tr + tr td { border-top: 1px solid var(--card-border); }
+.tdRight { text-align: right; }
+
+/* ---------- Collapse (toggle PDF) ---------- */
+.collapse {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height .28s ease, opacity .18s ease;
+}
+.open {
+  max-height: 1200px; /* suficientemente grande para el visor */
+  opacity: 1;
+}
+
+.pdfWrap { margin-top: 10px; }
+
+/* ---------- Footer actions ---------- */
+.actions {
+  display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 560px) {
+  .sectionHead { flex-direction: column; align-items: stretch; }
+  .headActions { justify-content: flex-end; }
+  .title { font-size: 1.2rem; }
+  .sectionTitle { font-size: 1.05rem; }
+}
+
+/* ==========================
+   CTA Final
+=========================== */
+.cta {
+  background: linear-gradient(90deg, var(--pri-2) 0%, var(--sec-3) 100%);
+  text-align: center;
+  color: var(--white);
+  padding: 36px 0;
+  text-align: center;
+}
+
+.ctaTitle {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.ctaText {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.ctaBtn {
+  background-color: var(--white);
+  color: var(--sec);
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.ctaBtn:hover {
+    background: var(--sec);
+  color: var(--white);
+}
+
+.fullBleed {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
