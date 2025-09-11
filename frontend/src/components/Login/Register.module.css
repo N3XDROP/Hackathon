@@ -1,0 +1,262 @@
+:root {
+  --teal-900: #0c6b62; /* verde/teal profundo */
+  --teal-800: #0f8f6e; /* verde esmeralda (btn + header) */
+  --teal-700: #125a42; /* hover/gradiente medio */
+  --teal-600: #34d399;
+  --teal-600: #09cbcb;
+  --mint-100: #0a615a;
+  --card: #f3f7f6;
+  --ink: #1e293b;
+  --muted: #000000;
+  --ok: #cddede;
+  --err: #ef4444;
+  --white: #ffffff;
+  --shadow: 0 20px 50px rgba(6, 24, 38, 0.16);
+}
+
+/* ===== Lienzo ===== */
+.container {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    sans-serif;
+}
+
+/* ===== Card ===== */
+.box {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+.box:focus-within {
+  transform: translateY(-2px);
+}
+
+/* ===== Header curvo ===== */
+.header {
+  background: linear-gradient(180deg, var(--teal-800), var(--teal-900));
+  color: var(--white);
+  padding: 36px 28px 72px;
+  position: relative;
+}
+.header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -38px;
+  height: 38px;
+  background: radial-gradient(
+    120% 60px at 50% -10px,
+    var(--card) 60%,
+    transparent 61%
+  );
+}
+.kicker {
+  opacity: 0.9;
+  font-size: 14px;
+  color: #12482a;
+
+}
+.title {
+  font-size: clamp(26px, 4vw, 32px);
+  font-weight: 750;
+  line-height: 1.1;
+  margin-top: 6px;
+  color: #fbfcf9;
+}
+.leaf {
+  position: absolute;
+  right: 18px;
+  top: 16px;
+  width: 56px;
+  height: 56px;
+  opacity: 0.25;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.15));
+}
+
+/* ===== Body ===== */
+.body {
+  padding: 18px 24px 24px;
+  margin-top: 10px; /* solapa con curva */
+}
+h1 {
+  display: none;
+} /* accesible en JSX, oculto visual */
+
+/* Campos con ícono */
+.field {
+  position: relative;
+  margin-bottom: 14px;
+}
+.icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-100%);
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
+}
+.input,
+.select {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 40px;
+  border-radius: 12px;
+  border: 1px solid #125896;
+  background: var(--white);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.input::placeholder {
+  color: #8c9095;
+}
+.input:focus,
+.select:focus {
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 4px rgba(19, 142, 151, 0.12);
+}
+
+/* Password + botón ver */
+.passwordWrapper {
+  position: relative;
+}
+.toggleBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-70%);
+  padding: 6px 10px;
+  background: transparent;
+  border: 0;
+  color: var(--teal-700);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Rol */
+.select {
+  padding-left: 14px;
+}
+
+/* Botón primario */
+.btn {
+  width: 100%;
+  height: 46px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--teal-800);
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 0.04s ease, filter 0.2s ease, background 0.2s ease;
+}
+.btn:hover {
+  filter: brightness(1.05);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Otras acciones */
+.alt {
+  margin: 14px 0 6px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.rule {
+  height: 1px;
+  background: #e4eaee;
+}
+
+/* Mensajes */
+.message {
+  margin-top: 10px;
+  min-height: 20px;
+  font-size: 14px;
+  color: #334155;
+}
+.message:empty {
+  display: none;
+}
+
+/* Footer */
+.footer {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+.footer a {
+  color: var(--teal-800);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+/* Pequeñas mejoras móviles */
+@media (max-width: 420px) {
+  .header {
+    padding: 28px 20px 64px;
+  }
+  .body {
+    padding: 14px 16px 20px;
+  }
+}
+
+/* Dark mode automático */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card: #0f172a;
+    --ink: #e5e7eb;
+    --muted: #9aa6b2;
+    --white: #0b1220;
+  }
+  .container {
+    background: radial-gradient(
+        1200px 1200px at 100% -200px,
+        rgba(19, 142, 151, 0.25),
+        transparent 60%
+      ),
+      #06121a;
+  }
+  .box {
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  }
+  .header::after {
+    background: radial-gradient(
+      120% 60px at 50% -10px,
+      var(--card) 60%,
+      transparent 61%
+    );
+  }
+  .input,
+  .select {
+    background: #0b1220;
+    border-color: #203047;
+    color: var(--ink);
+  }
+  .rule {
+    background: #22324a;
+  }
+}

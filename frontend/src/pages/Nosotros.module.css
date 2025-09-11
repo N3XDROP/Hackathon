@@ -1,10 +1,11 @@
-/* Hero */
+/* =========================
+   TOKENS & BASE
+========================= */
 .hero {
   position: relative;
   padding: 6px 0;
   text-align: center;
 }
-
 .heroImg {
   width: 100%;
   max-height: 200px;
@@ -12,578 +13,489 @@
   display: block;
   border-radius: 0;
 }
-
+/* Por defecto centrado; en desktop lo movemos (ver media query) */
 .heroTitle {
   position: absolute;
-  top: 35%;
-  left: 80%;
-  transform: translate(0%, -50%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,.5);
+  text-align: center;
+  padding: 0 .5rem;
+  max-width: 90%;
+  line-height: 1.15;
 }
 
-/* Secciones */
-.sectionSurface {
-  padding: 56px 0;
-  background: var(--surface);
-}
+/* Superficies (light) */
+.sectionSurface { padding: 56px 0; background: #f8fafb; }
+.sectionDefault { padding: 36px 0; background: transparent; }
+.sectionBg { padding: 36px 0; background: transparent; display: flex; justify-content: center; }
 
-.sectionDefault {
-  padding: 36px 0;
-  background: transparent;
-}
-
-/* Contenedores */
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: clamp(16px, 4vw, 40px);
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 16px;
+  flex-wrap: wrap;
 }
+.centerBox { max-width: 1100px; margin: 0 auto; text-align: center; padding: 0 16px; }
 
-.centerBox {
-  max-width: 1100px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 0 16px;
-}
+.left { flex: 1; text-align: center; min-width: 280px; }
+.right { flex: 1; min-width: 280px; }
 
-/* Cols */
-.left {
-  flex: 1;
-  text-align: center;
-}
-
-.right {
-  flex: 1;
-}
-
-/* Asegura que el contenedor de la imagen no se expanda */
-.borderWrapper {
-  display: inline-block; /* se ajusta al tamaño del contenido */
-  max-width: 430px; /* controla el ancho del borde+imagen */
-  border-radius: 12px;
-}
-
-/* Imagen con borde eléctrico */
-.figuree {
-  width: 100%;
-  max-width: 430px; /* mismo ancho que el wrapper */
-  height: auto;
-  display: block;
-  border-radius: 12px;
-  margin: 0 auto; /* centrada en su columna */
-}
+/* Borde eléctrico + figura */
+.borderWrapper { display: inline-block; width: 100%; max-width: 430px; border-radius: 12px; }
+.figuree { width: 100%; height: auto; display: block; border-radius: 12px; margin: 0 auto; }
 
 /* Tipografía */
 .title {
   margin: 0;
-  font-size: 2.4rem;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   color: var(--sec);
   text-align: left;
 }
-
-.subtitle {
-  margin: 0;
-  color: var(--sec);
+.titlee {
+  margin: 0 0 16px;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: #1f2937;
+  text-align: left;
+  line-height: 1.2;
 }
-
+.subtitle { margin: 0; color: var(--sec); }
 .text {
   margin: 16px 0;
-  font-size: 1.1rem; /* tamaño ~17.6px */
-  line-height: 1.6; /* más aire entre líneas */
-  color: #464c54; /* gris medio (Tailwind gray-600) */
-  font-family: "Inter", sans-serif; /* tipografía limpia */
-  font-weight: 400; /* peso normal, elegante */
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+  line-height: 1.6;
+  color: #464c54;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
 }
+.textCenter { margin: 16px auto 0; }
 
-.textCenter {
-  margin: 16px auto 0;
-}
-
-/* ===== Valores refinado ===== */
-.valuesSection {
-  padding: 56px 0;
-  background: #fff;
-}
-.valuesColLeft {
-  padding-left: 45px; /* ← mueve el texto e íconos hacia el centro */
-}
-
+/* =========================
+   VALORES
+========================= */
+.valuesSection { padding: clamp(36px, 6vw, 56px) 0; background: #fff; }
 .valuesGrid2 {
   display: grid;
-  grid-template-columns: 1.2fr 1.2fr; /* texto / imagen */
+  grid-template-columns: 1.1fr 1.1fr;
   align-items: center;
-  gap: 50px;
+  gap: clamp(20px, 5vw, 50px);
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
 }
-
-.valuesHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
+.valuesColLeft { padding-left: 0; }
+.valuesHeader { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .valuesAccent {
-  width: 8px;
-  height: 28px;
-  border-radius: 8px;
+  width: 8px; height: 28px; border-radius: 8px;
   background: linear-gradient(180deg, var(--sec, #20c25c), #06d633);
 }
-
 .valuesTitleBig {
   margin: 0;
-  font-size: clamp(1.8rem, 4vw, 4rem);
+  font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 700;
   color: #373e48;
-  letter-spacing: -0.5px;
+  letter-spacing: -.5px;
   line-height: 1.1;
 }
+.valuesList { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 26px; }
+.valueItem { display: grid; grid-template-columns: 38px auto; gap: 14px; align-items: start; }
+.valueIcon { transform: translateY(2px); color: var(--sec, #10b981); }
+.valueHeading { margin: 0; color: #10a82f; font-weight: 700; font-size: clamp(1.05rem, 2.6vw, 1.35rem); }
+.valueText { margin: 6px 0 0; color: #585c64; font-size: 1.05rem; line-height: 1.7; }
 
-.valuesList {
-  list-style: none;
-  padding: 0;
-  margin: 24px 0 0;
-  display: grid;
-  gap: 26px;
-}
-
-.valueItem {
-  display: grid;
-  grid-template-columns: 38px auto;
-  gap: 14px;
-  align-items: start;
-}
-
-.valueIcon {
-  font-size: 28px;
-  line-height: 1;
-  transform: translateY(2px);
-  color: var(--sec, #10b981);
-}
-
-.valueHeading {
-  margin: 0;
-  color: #10a82f; /* usa var(--sec) si prefieres */
-  font-weight: 700;
-  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
-}
-
-.valueText {
-  margin: 6px 0 0;
-  color: #585c64;
-  font-size: 1.05rem;
-  line-height: 1.7;
-}
-
-/* Imagen con acento */
-.valuesColRight {
-  display: flex;
-  justify-content: center;
-}
-
-.valuesFigure {
-  position: relative;
-  display: inline-block;
-}
-
+.valuesColRight { display: flex; justify-content: center; }
+.valuesFigure { position: relative; display: inline-block; }
 .valuesImage {
-  width: 100%;
-  max-width: 580px;
-  border-radius: 14px;
-  display: block;
-  object-fit: cover;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+  width: 100%; max-width: 580px;
+  border-radius: 14px; display: block; object-fit: cover;
+  box-shadow: 0 10px 28px rgba(0,0,0,.1);
 }
-
-/* barra/acento bajo la imagen */
 .imageAccent {
-  position: absolute;
-  left: 12%;
-  bottom: -10px;
-  width: 56px;
-  height: 6px;
-  border-radius: 999px;
-  background: #35ac11; /* acento cálido */
+  position: absolute; left: 12%; bottom: -10px;
+  width: 56px; height: 6px; border-radius: 999px; background: #35ac11;
+}
+.valueItem:hover .valueHeading { text-decoration: underline; text-underline-offset: 3px; }
+
+/* =========================
+   MISIÓN / VISIÓN (cards)
+========================= */
+.cardsWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 3vw, 24px);
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 16px;
+}
+.misionCard, .visionCard {
+  color: #fff; padding: 24px 28px; border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+.misionCard { background: #1dd56d; }
+.visionCard { background: #1dd56d; }
+.visionHeader { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.visionIcon { font-size: 1.5rem; }
+.visionTitle { margin: 0; font-size: 1.3rem; font-weight: 700; }
+.visionText { font-size: 1.05rem; line-height: 1.7; margin: 0; }
+
+/* =========================
+   PROPÓSITO SUPERIOR
+========================= */
+.purpose {
+  padding: clamp(36px, 6vw, 72px) 0;
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(16,185,129,.08), transparent 60%),
+    radial-gradient(900px 400px at 90% 120%, rgba(16,185,129,.06), transparent 60%),
+    #ffffff;
+}
+.purposeInner { max-width: 1100px; margin: 0 auto; padding: 0 16px; text-align: center; }
+.badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
+  background: rgba(16,185,129,.12); color: #0f973a; font-weight: 600;
+  font-size: clamp(1.2rem, 3vw, 2.1rem); margin-bottom: 14px;
+}
+.purposeTitle { margin: 0 0 12px; font-size: clamp(1.6rem, 3.6vw, 2.6rem); font-weight: 700; color: #1f2937; letter-spacing: -.3px; }
+.purposeText { margin: 0 auto 28px; max-width: 820px; color: #4b5563; font-size: 1.08rem; line-height: 1.7; }
+
+.purposeGrid {
+  list-style: none; margin: 0 auto; padding: 0; max-width: 980px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+.purposeItem {
+  display: grid; grid-template-columns: 42px auto; gap: 12px; align-items: start;
+  padding: 22px 20px; border-radius: 14px; background: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06); transition: transform .25s ease, box-shadow .25s ease;
+}
+.purposeItem:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,.12); }
+.purposeIcon { width: 28px; height: 28px; color: #10b981; flex-shrink: 0; }
+.purposeItem h3 { margin: 0 0 6px; font-size: 1.05rem; color: #047857; font-weight: 700; }
+.purposeItem p { margin: 0; color: #6b7280; line-height: 1.6; font-size: .98rem; }
+
+/* =========================
+   GOBERNANZA LITE
+========================= */
+.govLite {
+  padding: 64px 0;
+  background:
+    radial-gradient(900px 360px at 6% -6%, rgba(16,185,129,.07), transparent 60%),
+    radial-gradient(900px 360px at 94% 110%, rgba(16,185,129,.06), transparent 60%),
+    #fff;
+}
+.govLiteInner { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+.govLiteHeader { text-align: center; margin-bottom: 18px; }
+.govLiteHeaderRow { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
+.govLiteTitle { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; color: #353a42; letter-spacing: -.3px; }
+.govLiteText { margin: 0 auto; max-width: 860px; text-align: center; color: #4b5563; font-size: 1.06rem; line-height: 1.7; }
+.govPills {
+  list-style: none; padding: 0; margin: 26px auto 0; max-width: 860px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;
+}
+.govPill {
+  display: inline-flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 999px;
+  background: linear-gradient(135deg, #e9fbf3 0%, #f7fffb 100%);
+  color: #065f46; font-weight: 700; box-shadow: 0 8px 18px rgba(16,185,129,.1); justify-content: center;
+}
+.pillIcon { width: 20px; height: 20px; color: #10b981; }
+
+/* =========================
+   CTA Final
+========================= */
+.cta {
+  background: linear-gradient(90deg, var(--pri-2) 0%, var(--sec-3) 100%);
+  text-align: center;
+  color: var(--white);
+  padding: clamp(24px, 5vw, 36px) 0;
+}
+.ctaTitle {
+  text-align: center;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  margin-bottom: 14px;
+  color: var(--white);
+}
+.ctaText {
+  text-align: center;
+  font-size: clamp(1rem, 2.8vw, 1.2rem);
+  margin-bottom: 20px;
+  color: var(--white);
+  opacity: 0.9;
+}
+.ctaBtn {
+  background-color: var(--white);
+  color: var(--sec);
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-block;
+  white-space: nowrap;
+}
+.ctaBtn:hover {
+  background: var(--sec);
+  color: var(--white);
 }
 
-/* Hover sutil */
-.valueItem:hover .valueHeading {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* =========================
+   RESPONSIVE
+========================= */
+@media (min-width: 992px) {
+  /* Mueve el hero title a la derecha solo en desktop ancho (opcional) */
+  .heroTitle {
+    top: 35%;
+    left: 70%;
+    transform: translate(-30%, -50%);
+    font-size: clamp(1.4rem, 2.6vw, 2rem);
+  }
 }
-
-/* Responsive */
 @media (max-width: 1080px) {
-  .valuesGrid2 {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .valuesColRight {
-    order: 2; /* texto arriba, imagen abajo */
-  }
-  .valuesImage {
-    max-width: 680px;
-  }
+  .valuesGrid2 { grid-template-columns: 1fr; gap: 32px; }
+  .valuesColRight { order: 2; }
+  .valuesImage { max-width: 100%; }
+}
+@media (max-width: 900px) {
+  .container { flex-direction: column; gap: 24px; }
+  .title, .titlee { text-align: center; }
+  .cardsWrapper { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (max-width: 600px) {
+  .purposeGrid { grid-template-columns: 1fr; }
+  .govPills { grid-template-columns: 1fr; }
+}
+
+/*********************************************************
+ * DARK MODE TOTAL (fondo oscuro) + CARDS VERDE OSCURO
+ * con animaciones y micro-interacciones
+ *********************************************************/
+html[data-theme="dark"] {
+  /* Fondo base */
+  --bg-light: #0c1213;
+  --text: #eef3f7;
+
+  /* Superficies */
+  --surface-1: #0f2018; /* cards principales */
+  --surface-2: #0b1813; /* subcards/pills */
+
+  /* Bordes/sombras */
+  --card-border: rgba(255,255,255,.10);
+}
+
+/* Fondo global oscuro */
+html[data-theme="dark"] body,
+html[data-theme="dark"] .sectionSurface,
+html[data-theme="dark"] .sectionDefault,
+html[data-theme="dark"] .sectionBg,
+html[data-theme="dark"] .valuesSection,
+html[data-theme="dark"] .purpose,
+html[data-theme="dark"] .govLite {
+  background: var(--bg-light);
+  color: var(--text);
+}
+
+/* Tipografía / títulos */
+html[data-theme="dark"] .title,
+html[data-theme="dark"] .titlee,
+html[data-theme="dark"] .valuesTitleBig,
+html[data-theme="dark"] .govLiteTitle {
+  color: #f1f6fb;
+}
+html[data-theme="dark"] .valueHeading { color: var(--pri-2); }
+html[data-theme="dark"] .text,
+html[data-theme="dark"] .valueText,
+html[data-theme="dark"] .purposeText,
+html[data-theme="dark"] .govLiteText {
+  color: #dbe5ef;
+}
+
+/* Hero */
+html[data-theme="dark"] .heroTitle {
+  color: var(--white);
+  text-shadow: 0 2px 12px rgba(0,0,0,.55);
+}
+
+/* Cards principales */
+html[data-theme="dark"] .misionCard,
+html[data-theme="dark"] .visionCard,
+html[data-theme="dark"] .purposeItem,
+html[data-theme="dark"] .valuesImageCard,
+html[data-theme="dark"] .valuesContainer,
+html[data-theme="dark"] .cardsWrapper .card {
+  background: var(--surface-1);
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 10px 28px rgba(0,0,0,.4);
+}
+
+/* Borde lateral con acento */
+html[data-theme="dark"] .misionCard { border-left: 6px solid var(--brand-mision-1); }
+html[data-theme="dark"] .visionCard { border-left: 6px solid var(--brand-vision-1); }
+
+/* Títulos / íconos con acento */
+html[data-theme="dark"] .misionCard .visionTitle,
+html[data-theme="dark"] .misionCard .visionHeader .visionIcon { color: var(--brand-mision-1); }
+html[data-theme="dark"] .visionCard .visionTitle,
+html[data-theme="dark"] .visionCard .visionHeader .visionIcon { color: var(--brand-vision-1); }
+html[data-theme="dark"] .visionText { color: #e6edf6; }
+
+/* Purpose */
+html[data-theme="dark"] .purposeItem h3 { color: var(--pri-2); }
+html[data-theme="dark"] .purposeItem p  { color: #d8e3ee; }
+
+/* Gobernanza */
+html[data-theme="dark"] .govPill {
+  background: var(--surface-2);
+  border: 1px solid rgba(255,255,255,.08);
+  color: var(--text);
+  box-shadow: 0 8px 18px rgba(0,0,0,.4);
+}
+html[data-theme="dark"] .pillIcon,
+html[data-theme="dark"] .valueIcon {
+  color: var(--pri-2);
+}
+
+/* Acentos */
+html[data-theme="dark"] .valuesAccent,
+html[data-theme="dark"] .imageAccent {
+  background: linear-gradient(180deg, var(--pri-2), var(--sec-3));
 }
 
 /* CTA */
-.cta {
-  padding: 36px 0;
-  background: linear-gradient(90deg, var(--pri) 0%, var(--sec) 100%);
-  color: #fff;
+html[data-theme="dark"] .cta {
+  background: linear-gradient(90deg, var(--pri-2) 0%, var(--sec-3) 100%);
+  color: var(--white);
 }
-
-.ctaTitle {
-  margin: 0;
-}
-
-.ctaText {
-  margin: 0;
-}
-
-.ctaBtn {
-  display: inline-block;
-  padding: 12px 16px;
-  border-radius: 10px;
-  background: #fff;
+html[data-theme="dark"] .ctaBtn {
+  background: var(--white);
   color: var(--sec);
-  font-weight: 700;
-  margin-top: 12px;
-  text-decoration: none;
+}
+html[data-theme="dark"] .ctaBtn:hover {
+  background: var(--sec);
+  color: var(--white);
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .container {
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .title {
-    text-align: center;
-  }
-
-  .heroTitle {
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.25rem;
-  }
-
-  .valuesGrid {
-    grid-template-columns: 1fr 1fr;
-  }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes softFloat {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+@keyframes accentShimmer {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.12); }
+  100% { filter: brightness(1); }
 }
 
-@media (max-width: 600px) {
-  .valuesGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.titlee {
-  margin: 0 0 16px;
-  font-size: 2.5rem; /* tamaño grande */
-  font-weight: 700; /* negrita */
-  color: #1f2937; /* gris oscuro casi negro */
-  text-align: left;
-  font-family: "Inter", sans-serif; /* asegúrate de tenerla importada */
-  line-height: 1.2;
-}
-/* vision */
-.sectionBg {
-  padding: 36px 0;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-}
-
-.cardsWrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* dos columnas iguales */
-  gap: 24px; /* espacio entre misión y visión */
-  max-width: 1200px;
-  width: 100%;
-  padding: 0 16px; /* aire lateral */
-}
-
+/* Transiciones base */
 .misionCard,
-.visionCard {
-  color: #fff;
-  padding: 24px 28px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.visionCard,
+.purposeItem,
+.govPill,
+.cardsWrapper .card,
+.ctaBtn {
+  transition: transform .22s ease, box-shadow .26s ease, border-color .26s ease, background-color .26s ease;
 }
 
-.misionCard {
-  background: #1dd56d; /* azul */
+/* Entradas suaves */
+.heroTitle,
+.valuesTitleBig,
+.govLiteTitle,
+.valuesSection,
+.purpose,
+.govLite,
+.cardsWrapper {
+  animation: fadeSlideUp .45s ease both;
 }
 
-.visionCard {
-  background: #1dd56d; /* verde */
+/* Hero hover */
+.heroImg { transition: transform .5s ease, filter .5s ease; }
+.hero:hover .heroImg {
+  transform: scale(1.02);
+  filter: saturate(1.03) contrast(1.02);
 }
 
-.visionHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+/* Hover lift */
+.misionCard:hover,
+.visionCard:hover,
+.purposeItem:hover,
+.govPill:hover,
+.cardsWrapper .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(0,0,0,.18);
 }
 
-.visionIcon {
-  font-size: 1.5rem;
+/* Click active */
+.misionCard:active,
+.visionCard:active,
+.purposeItem:active,
+.govPill:active,
+.cardsWrapper .card:active,
+.ctaBtn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.16);
 }
 
-.visionTitle {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
+/* Focus visible */
+.misionCard:focus-visible,
+.visionCard:focus-visible,
+.purposeItem:focus-visible,
+.govPill:focus-visible,
+.cardsWrapper .card:focus-visible,
+.ctaBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.08), 0 0 0 1px rgba(0,0,0,.25), 0 10px 22px rgba(0,0,0,.28);
+  transform: translateY(-1px);
 }
 
-.visionText {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  margin: 0;
-}
-
-/* Responsivo */
-@media (max-width: 900px) {
-  .cardsWrapper {
-    grid-template-columns: 1fr; /* apiladas en móvil */
-    gap: 16px;
-  }
-}
-/* ===== Propósito Superior ===== */
-.purpose {
-  padding: 72px 0;
-  background: radial-gradient(
-      1200px 500px at 10% -10%,
-      rgba(16, 185, 129, 0.08),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 400px at 90% 120%,
-      rgba(16, 185, 129, 0.06),
-      transparent 60%
-    ),
-    #ffffff;
-}
-
-.purposeInner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 16px;
-  text-align: center;
-}
-
-/* Badge pill */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(16, 185, 129, 0.12);
-  color: #0f973a;
-  font-weight: 600;
-  font-size: 2.1rem;
-  margin-bottom: 14px;
-}
-
-/* Título */
-.purposeTitle {
-  margin: 0 0 12px;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 700;
-  color: #1f2937;
-  letter-spacing: -0.3px;
-}
-
-/* Texto */
-.purposeText {
-  margin: 0 auto 28px;
-  max-width: 820px;
-  color: #4b5563;
-  font-size: 1.08rem;
-  line-height: 1.7;
-}
-
-/* Pilares */
-.purposeGrid {
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-  max-width: 980px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-.purposeItem {
-  display: grid;
-  grid-template-columns: 42px auto;
-  gap: 12px;
-  align-items: start;
-  padding: 22px 20px;
-  border-radius: 14px;
-  background: #fff; /* el fondo sigue blanco */
-
-  box-shadow: 0 6px 16px rgba(182, 75, 75, 0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.purposeItem:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-}
-
+/* Iconos */
+.pillIcon,
+.valueIcon,
 .purposeIcon {
-  width: 28px;
-  height: 28px;
-  color: #10b981; /* var(--sec) si ya la usas */
-  flex-shrink: 0;
+  transition: transform .18s ease, filter .18s ease;
+}
+.govPill:hover .pillIcon,
+.valueItem:hover .valueIcon,
+.purposeItem:hover .purposeIcon {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
 }
 
-.purposeItem h3 {
-  margin: 0 0 6px;
-  font-size: 1.05rem;
-  color: #047857; /* verde oscuro */
-  font-weight: 700;
-}
-
-.purposeItem p {
-  margin: 0;
-  color: #6b7280;
-  line-height: 1.6;
-  font-size: 0.98rem;
-}
-
-/* Responsive */
-@media (max-width: 960px) {
-  .purposeGrid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .purposeItem {
-    text-align: left;
-  }
-}
-/* ===== Gobernanza (versión ligera) ===== */
-.govLite {
-  padding: 64px 0;
-  background: radial-gradient(
-      900px 360px at 6% -6%,
-      rgba(16, 185, 129, 0.07),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 360px at 94% 110%,
-      rgba(16, 185, 129, 0.06),
-      transparent 60%
-    ),
-    #fff;
-}
-
-.govLiteInner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-.govLiteHeader {
-  text-align: center;
-  margin-bottom: 18px;
-}
-
-.govLiteBadge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(16, 185, 129, 0.12); /* usa var(--sec) si tienes */
-  color: #0f973a;
-  font-weight: 300;
-  font-size: 3rem;
-  margin-bottom: 10px;
-}
-
-.govLiteTitle {
-  margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  font-weight: 700;
-  color: #353a42;
-  letter-spacing: -0.3px;
-}
-
-.govLiteText {
-  margin: 0 auto;
-  max-width: 860px;
-  text-align: center;
-  color: #4b5563;
-  font-size: 1.06rem;
-  line-height: 1.7;
-}
-.govLiteHeaderRow {
-  display: flex;
-  align-items: center;
-  justify-content: center; /* 👈 centra todo el bloque */
-  gap: 12px; /* espacio entre acento y texto */
-  margin-bottom: 20px;
-}
-
+/* Acentos */
+.imageAccent,
 .valuesAccent {
-  display: inline-block;
-  width: 12px;
-  height: 28px;
-  border-radius: 6px;
-  background: linear-gradient(180deg, #10b981, #059669);
+  transition: filter .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.valuesFigure:hover .imageAccent {
+  box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+  transform: translateY(1px);
+}
+.valuesHeader:hover .valuesAccent {
+  animation: accentShimmer 1.2s ease both;
 }
 
-/* Pills de principios */
-.govPills {
-  list-style: none;
-  padding: 0;
-  margin: 26px auto 0;
-  max-width: 860px;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+/* Header cards (float) */
+.misionCard:hover .visionHeader,
+.visionCard:hover .visionHeader {
+  animation: softFloat 2.2s ease-in-out infinite;
 }
 
-.govPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    #e9fbf3 0%,
-    #f7fffb 100%
-  ); /* degradado verdoso */
-  color: #065f46;
-  font-weight: 700;
-  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.1);
-  justify-content: center;
+/* CTA hover */
+.ctaBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.18);
 }
 
-.pillIcon {
-  width: 20px;
-  height: 20px;
-  color: #10b981;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .govPills {
-    grid-template-columns: 1fr;
-  }
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
 }
