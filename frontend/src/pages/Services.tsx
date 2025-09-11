@@ -89,7 +89,7 @@ export default function Services() {
             Si alguno de nuestros servicios te interesa, ¡contáctanos y empieza a
             transformar tu empresa!
           </p>
-          <Link to="/contacto" className={styles.ctaBtn}>
+          <Link to="/login" className={styles.ctaBtn}>
             Contáctanos
           </Link>
         </div>

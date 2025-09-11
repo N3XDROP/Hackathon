@@ -1,0 +1,241 @@
+/* ================================
+   Login.module.css (variables + iconos + fixes)
+   ================================ */
+
+/* Fondo y layout principal */
+:global(.login-container) {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 3vw, 32px);
+  background: var(--bg-light);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Tarjeta */
+:global(.login-box) {
+  width: min(92vw, 420px);
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  padding: clamp(18px, 3.6vw, 28px);
+  text-align: center;
+  animation: login-pop .28s ease-out both;
+}
+
+/* ===== Encabezado con gradiente ===== */
+:global(.cardHero) {
+  position: relative;
+  text-align: left;
+  padding: 18px 16px 12px;
+  margin: -8px -8px 14px; /* ocupa el ancho superior de la tarjeta */
+  border-radius: 12px 12px 10px 10px;
+  background: linear-gradient(180deg, var(--sec) 0%, var(--sec-2) 100%);
+  color: #fff;
+}
+:global(.heroTitle) {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  font-size: clamp(20px, 2.4vw, 26px);
+  color: #fff;
+}
+:global(.heroBlob) {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  filter: blur(.2px);
+}
+
+/* Subtítulo opcional */
+:global(.login-box) p.subtitle {
+  margin: 0 0 14px 0;
+  color: var(--text);
+  opacity: .75;
+  font-size: 14px;
+}
+
+/* ===== Grupos de formulario con íconos ===== */
+:global(.fgroup){ 
+  position:relative; 
+  display:block; 
+  margin-bottom:12px; 
+  min-height:46px; 
+}
+
+:global(.input) {
+  width: 100%;
+  height: 46px;
+  padding: 12px 44px 12px 42px; /* espacio para iconos */
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+  transition: box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+}
+:global(.input::placeholder) {
+  color: var(--text);
+  opacity: .55;
+}
+:global(.input:focus) {
+  border-color: var(--pri);
+  box-shadow: 0 0 0 4px rgba(1, 211, 124, 0.18);
+}
+
+:global(.ileft) {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .85;
+  pointer-events: none;
+}
+
+/* === Botón ojo (toggle) — sin heredar estilo global de button === */
+:global(.login-box .irightBtn){
+  all: unset;                  /* resetea estilos globales */
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  cursor: pointer;
+}
+:global(.login-box .irightBtn:hover){ background: rgba(0,0,0,.06); }
+html[data-theme="dark"] :global(.login-box .irightBtn:hover){ background: rgba(255,255,255,.08); }
+
+/* ===== Captcha ===== */
+:global(.captcha-row) {
+  display: grid;
+  grid-template-columns: 24px 1fr 110px 40px; /* icono, texto, input, botón */
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0 8px 0;
+  text-align: left;
+  font-size: 14px;
+}
+@media (max-width: 420px) {
+  :global(.captcha-row) {
+    grid-template-columns: 24px 1fr 92px 40px;
+  }
+}
+:global(.icap){ opacity: .9; }
+:global(.captcha-row) span { color: var(--text); opacity: .9; }
+
+:global(.captcha-input) {
+  height: 42px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+  text-align: center;
+  transition: box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+}
+:global(.captcha-input:focus) {
+  border-color: var(--pri);
+  box-shadow: 0 0 0 4px rgba(1, 211, 124, 0.18);
+}
+
+/* Botón recargar captcha — pequeño y neutro */
+:global(.login-box .captcha-refresh) {
+  all: unset;                  /* no heredar botón global */
+  box-sizing: border-box;
+  width: 40px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  font-size: 18px;
+  color: var(--text);
+  cursor: pointer;
+}
+:global(.login-box .captcha-refresh:hover){ filter: brightness(.97); }
+:global(.login-box .captcha-refresh:active){ transform: translateY(1px); }
+
+/* ===== Botón enviar ===== */
+:global(.submit),
+:global(.login-box button[type="submit"]) {
+  width: 100%;
+  height: 48px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--btn-bg);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: filter .15s ease, transform .06s ease, background-color .2s ease;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* espacio para ícono */
+}
+:global(.login-box button[type="submit"]:hover) { filter: brightness(0.98); }
+:global(.login-box button[type="submit"]:active) { transform: translateY(1px); }
+:global(.login-box button[type="submit"]:disabled) { opacity: 0.55; cursor: not-allowed; }
+
+/* Mensajes */
+:global(.login-msg) {
+  margin: 8px 0 0 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: left;
+  word-break: break-word;
+}
+:global(.login-success) {
+  margin: 0 0 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(1, 211, 124, 0.12);
+  color: var(--text);
+  border: 1px solid rgba(1, 211, 124, 0.35);
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Estado bloqueado (opcional) */
+:global(.locked) {
+  pointer-events: none;
+  filter: grayscale(0.2);
+}
+
+/* Focus visible accesible */
+:global(.login-box button:focus-visible),
+:global(.login-box .captcha-refresh:focus-visible),
+:global(.login-box .irightBtn:focus-visible) {
+  outline: 3px solid rgba(1, 211, 124, 0.45);
+  outline-offset: 2px;
+}
+
+/* Animación entrada */
+@keyframes login-pop {
+  from { transform: translateY(6px) scale(.985); opacity: 0; }
+  to   { transform: translateY(0)   scale(1);     opacity: 1; }
+}

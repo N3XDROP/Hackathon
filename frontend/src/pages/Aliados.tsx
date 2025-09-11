@@ -20,92 +20,92 @@ export default function Aliados() {
 
           {/* Carrusel */}
           <div className={styles.forceMotion}>
-          <div className={styles.logoScroller} role="region" aria-label="Aliados">
-            <div className={styles.logoTrack} style={{ animation: 'scrollLogos 28s linear infinite', willChange: 'transform' }}>
-              {/* Lista real */}
-              <div className={styles.logoItem}>
-                <img
-                  src="/images/gob.png"
-                  alt="Gobernación de Boyacá"
-                  className={styles.partnerLogo}
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                />
-              </div>
-              <div className={styles.logoItem}>
-                <img
-                  src="/images/camara.jpg"
-                  alt="Cámara de Comercio de Tunja"
-                  className={styles.partnerLogo}
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                />
-              </div>
-              <div className={styles.logoItem}>
-                <img
-                  src="/images/Uni.jpg"
-                  alt="Universidad Sergio Arboleda"
-                  className={styles.partnerLogo}
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                />
-              </div>
-              <div className={styles.logoItem}>
-                <img
-                  src="/images/um.jpeg"
-                  alt="UMCITI"
-                  className={styles.partnerLogo}
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                />
-              </div>
-              <div className={styles.logoItem}>
-                <img
-                  src="/images/innpulsa.png"
-                  alt="Innpulsa Colombia"
-                  className={styles.partnerLogo}
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                />
-              </div>
-              <div className={styles.logoItem}>
-                <img
-                  src="/images/sennova.png"
-                  alt="Sennova Sogamoso"
-                  className={styles.partnerLogo}
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                />
-              </div>
+            <div className={styles.logoScroller} role="region" aria-label="Aliados">
+              <div className={styles.logoTrack}>
+                {/* Lista real */}
+                <div className={styles.logoItem}>
+                  <img
+                    src="/images/gob.png"
+                    alt="Gobernación de Boyacá"
+                    className={styles.partnerLogo}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                  />
+                </div>
+                <div className={styles.logoItem}>
+                  <img
+                    src="/images/camara.jpg"
+                    alt="Cámara de Comercio de Tunja"
+                    className={styles.partnerLogo}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                  />
+                </div>
+                <div className={styles.logoItem}>
+                  <img
+                    src="/images/Uni.jpg"
+                    alt="Universidad Sergio Arboleda"
+                    className={styles.partnerLogo}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                  />
+                </div>
+                <div className={styles.logoItem}>
+                  <img
+                    src="/images/um.jpeg"
+                    alt="UMCITI"
+                    className={styles.partnerLogo}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                  />
+                </div>
+                <div className={styles.logoItem}>
+                  <img
+                    src="/images/innpulsa.png"
+                    alt="Innpulsa Colombia"
+                    className={styles.partnerLogo}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                  />
+                </div>
+                <div className={styles.logoItem}>
+                  <img
+                    src="/images/sennova.png"
+                    alt="Sennova Sogamoso"
+                    className={styles.partnerLogo}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                  />
+                </div>
 
-              {/* Duplicado para scroll infinito (oculto a accesibilidad y tab-orden) */}
-              <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
-                <img src="/images/gob.png" alt="" className={styles.partnerLogo} draggable="false" />
-              </div>
-              <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
-                <img src="/images/camara.jpg" alt="" className={styles.partnerLogo} draggable="false" />
-              </div>
-              <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
-                <img src="/images/Uni.jpg" alt="" className={styles.partnerLogo} draggable="false" />
-              </div>
-              <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
-                <img src="/images/um.jpeg" alt="" className={styles.partnerLogo} draggable="false" />
-              </div>
-              <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
-                <img src="/images/innpulsa.png" alt="" className={styles.partnerLogo} draggable="false" />
-              </div>
-              <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
-                <img src="/images/sennova.png" alt="" className={styles.partnerLogo} draggable="false" />
+                {/* Duplicado para scroll infinito */}
+                <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
+                  <img src="/images/gob.png" alt="" className={styles.partnerLogo} draggable="false" />
+                </div>
+                <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
+                  <img src="/images/camara.jpg" alt="" className={styles.partnerLogo} draggable="false" />
+                </div>
+                <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
+                  <img src="/images/Uni.jpg" alt="" className={styles.partnerLogo} draggable="false" />
+                </div>
+                <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
+                  <img src="/images/um.jpeg" alt="" className={styles.partnerLogo} draggable="false" />
+                </div>
+                <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
+                  <img src="/images/innpulsa.png" alt="" className={styles.partnerLogo} draggable="false" />
+                </div>
+                <div className={styles.logoItem} aria-hidden="true" tabIndex={-1}>
+                  <img src="/images/sennova.png" alt="" className={styles.partnerLogo} draggable="false" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
         </div>
       </section>
 
@@ -167,29 +167,13 @@ export default function Aliados() {
       </section>
 
       {/* CTA FINAL */}
-      <section
-        style={{
-          padding: "36px 0",
-          background: "linear-gradient(90deg, var(--pri) 0%, var(--sec) 100%)",
-          color: "#fff",
-        }}
-      >
-        <div className="container" style={{ display: "grid", gap: 12, textAlign: "center" }}>
-          <h3 style={{ margin: 0 }}>¿Quieres unirte al Clúster?</h3>
-          <p style={{ margin: 0 }}>
+      <section className={styles.ctaSection}>
+        <div className={styles.ctaInner}>
+          <h3 className={styles.ctaTitle}>¿Quieres unirte al Clúster?</h3>
+          <p className={styles.ctaText}>
             Inicia tu proceso y sube tus documentos para ser evaluado por el Comité de Ingreso.
           </p>
-          <Link
-            to="/login"
-            style={{
-              justifySelf: "center",
-              padding: "12px 16px",
-              borderRadius: 10,
-              background: "#fff",
-              color: "var(--sec)",
-              fontWeight: 700,
-            }}
-          >
+          <Link to="/login" className={styles.ctaBtn}>
             Iniciar proceso
           </Link>
         </div>

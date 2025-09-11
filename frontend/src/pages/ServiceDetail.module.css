@@ -12,7 +12,7 @@
 .notFound { max-width: 720px; margin: 64px auto; text-align: center; }
 
 /* =========================
-   HERO (imagen de fondo + overlay con tu paleta)
+   HERO (imagen de fondo + overlay)
 ========================= */
 .hero {
   position: relative;
@@ -26,7 +26,7 @@
   isolation: isolate;
 }
 
-/* Overlay con tu gradiente (pri → sombra) para legibilidad */
+/* Overlay para legibilidad */
 .heroOverlay {
   position: absolute;
   inset: 0;
@@ -38,7 +38,7 @@
   z-index: 0;
 }
 
-/* Card “glass” encima del hero en modo claro */
+/* Card “glass” encima del hero */
 .heroCard {
   position: relative;
   z-index: 1;
@@ -54,6 +54,20 @@
   text-align: center;
 }
 
+/* Ícono del hero */
+.heroIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  margin: 0 auto 10px;
+  background: color-mix(in srgb, var(--sec) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sec) 30%, transparent);
+  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+}
+.heroIcon { opacity: .9; }
 
 .title {
   font-size: clamp(1.7rem, 3.6vw, 2.6rem);
@@ -101,7 +115,7 @@
 
 .sectionTitle {
   font-size: clamp(1.15rem, 2.2vw, 1.35rem);
-  color: var(--sec);
+  color: var(--pri-2);
   margin: 0 0 10px;
 }
 
@@ -115,6 +129,17 @@
   height: 1px;
   border-top: 1px dashed color-mix(in oklab, var(--text) 24%, transparent);
   margin: clamp(18px, 3vw, 28px) 0;
+}
+
+.sectionHeader {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.sectionHeader svg {
+  position: relative;
+  top: 2px; /* sube/baja el icono para cuadrarlo con la primera línea de texto */
 }
 
 /* Items */
@@ -135,6 +160,23 @@
   padding: 14px 16px;
   box-shadow: 0 4px 6px rgba(0,0,0,.06);
   text-align: left;
+}
+
+.itemTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.itemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--pri) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pri) 28%, transparent);
 }
 
 .itemTitle {
@@ -160,22 +202,62 @@
   gap: 10px;
 }
 .benefit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background-color: var(--card-bg);
   border: 1px dashed var(--card-border, rgba(0,0,0,.12));
   border-radius: 8px;
   padding: 10px 12px;
 }
+/* ==========================
+   CTA Final
+=========================== */
+.cta {
+  background: linear-gradient(90deg, var(--pri-2) 0%, var(--sec-3) 100%);
+  text-align: center;
+  color: var(--white);
+  padding: 36px 0;
+  text-align: center;
+}
+
+.ctaTitle {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.ctaText {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.ctaBtn {
+  background-color: var(--white);
+  color: var(--sec);
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.ctaBtn:hover {
+    background: var(--sec);
+  color: var(--white);
+}
 
 /* =========================
    DARK MODE — SumerTIC
-   (contraste mejorado: card más clara que el bg,
-    títulos más claros y jerarquía en items/benefits)
 ========================= */
 html[data-theme="dark"] {
   --bg-light: #111718;
   --text: var(--white);
 
-  /* tokens de superficies para jerarquía */
+  /* superficies para jerarquía */
   --surface-1: #1f2a30;  /* card principal (más clara que el fondo) */
   --surface-2: #192125;  /* items/benefits (un paso más oscura) */
 
@@ -226,13 +308,57 @@ html[data-theme="dark"] .sectionTitle { color: var(--pri-2); }
 /* textos un poco más claros */
 html[data-theme="dark"] .intro,
 html[data-theme="dark"] .itemDesc { color: #e6edf6; }
+html[data-theme="dark"] .itemTitle {
+  color: #5fe3a1; /* verde con brillo */
+}
+
+
+
+
 
 /* items y benefits un paso más oscuros (jerarquía) */
 html[data-theme="dark"] .item {
   background: var(--surface-2);
   border-color: rgba(255,255,255,.08);
 }
+
 html[data-theme="dark"] .benefit {
   background: var(--surface-2);
   border-color: rgba(255,255,255,.10);
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(.96) rotate(-1deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.appearUp { animation: fadeInUp .6s cubic-bezier(.22,.61,.36,1) both; }
+.pop      { animation: popIn .5s cubic-bezier(.2,.8,.2,1) both; }
+
+/* Stagger para listas */
+.staggerList { --stagger-step: 70ms; --stagger-start: 0ms; display: contents; }
+.staggerItem {
+  opacity: 0;
+  animation: fadeInUp .6s cubic-bezier(.22,.61,.36,1) both;
+  animation-delay: calc(var(--stagger-start) + var(--index, 0) * var(--stagger-step));
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .appearUp, .pop, .staggerItem {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
