@@ -28,9 +28,22 @@ def auth_consume():
         session["mensaje_estado"] = "Falta token."
         return redirect(url_for("web.index"))
     try:
-        user = consume_sso_token(token)  # -> dict con id, email, role (string 'user'|'admin'|'comite')
+        user = consume_sso_token(token)  # -> dict con id, email, role (string o int)
         session["user"] = user
-        session["role"] = user.get("role")
+        # Guarda el rol como número si viene como número, y como string mapeado
+        role_map_num_to_str = {0: "admin", 1: "user", 2: "comite"}
+        role_raw = user.get("role")
+        if isinstance(role_raw, int):
+            session["role_num"] = role_raw
+            session["role"] = role_map_num_to_str.get(role_raw, None)
+        elif isinstance(role_raw, str):
+            session["role"] = role_raw
+            # Si el string es válido, guarda también el número
+            str_to_num = {"admin": 0, "user": 1, "comite": 2}
+            session["role_num"] = str_to_num.get(role_raw, None)
+        else:
+            session["role"] = None
+            session["role_num"] = None
         _save_user_meta(user)
         return redirect(url_for("web.index"))
     except Exception as e:
@@ -56,6 +69,7 @@ def index():
         mensaje=session.pop("mensaje_estado", None),
         user=session.get("user"),
         role=session.get("role"),
+        role_num=session.get("role_num"),
         backend_url=backend_url,
     )
 

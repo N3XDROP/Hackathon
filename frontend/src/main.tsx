@@ -13,6 +13,7 @@ import App from "./App";
 import Nosotros from "./pages/Nosotros";
 import Aliados from "./pages/Aliados";
 import NormativaCuotas from "./pages/NormativaCuotas";
+import Register from "./components/Login/Register";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/servicios" element={<Services />} />
           <Route path="/servicios/:serviceId" element={<ServiceDetail />} />
           <Route path="/api-test" element={<App />} />

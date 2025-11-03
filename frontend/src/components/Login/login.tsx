@@ -173,7 +173,7 @@ export default function Login() {
         {/* Encabezado con gradiente */}
         <header className="cardHero">
           <h1 id="login-title" className="heroTitle">
-            ¡Inicia sesión!
+            ¡Iniciar Sesión
           </h1>
           <span className="heroBlob" aria-hidden="true" />
         </header>

@@ -34,7 +34,7 @@
   margin: -8px -8px 14px; /* ocupa el ancho superior de la tarjeta */
   border-radius: 12px 12px 10px 10px;
   background: linear-gradient(180deg, var(--sec) 0%, var(--sec-2) 100%);
-  color: #fff;
+  color: #ffffff;
 }
 :global(.heroTitle) {
   margin: 0;

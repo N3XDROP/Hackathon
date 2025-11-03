@@ -9,11 +9,12 @@ JWT_AUDIENCE = "flask-chat"
 
 # Mapea tus roles numéricos del backend a nombres
 ROLE_MAP = {
-    0: "user",
-    1: "admin",
+    
+    0: "admin",
+    1: "user",
     2: "comite",
-    "0": "user",
-    "1": "admin",
+    "0": "admin",
+    "1": "user",
     "2": "comite"
 }
 

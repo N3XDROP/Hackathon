@@ -100,6 +100,9 @@ export default function Navbar() {
             <Link to="/login" className={styles.loginButton}>
               Ingresar
             </Link>
+              <Link to="/register" className={styles.loginButton}>
+             Registrarse
+            </Link>
 
             {/* Botón Dark/Light */}
             <button

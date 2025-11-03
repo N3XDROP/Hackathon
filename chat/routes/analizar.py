@@ -356,7 +356,7 @@ def admin_submit_to_committee():
 # ------------------- COMITÉ: listar bandeja -----------------
 @analizar_bp.get("/committee/reviews")
 @login_required
-@role_required("comite")
+@role_required("user", "admin")
 def committee_queue():
     """Lista elementos en 'revisados' para decisión del Comité."""
     items = list_items_by_state("revisados")
@@ -367,7 +367,7 @@ def committee_queue():
 # ------------------- COMITÉ: tomar decisión -----------------
 @analizar_bp.post("/committee/reviews/<path:rid>/decision")
 @login_required
-@role_required("comite")
+@role_required("user", "admin")
 def committee_decide(rid):
     """
     Body JSON: { decision: "aprobado" | "rechazado" }

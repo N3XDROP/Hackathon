@@ -1,192 +1,243 @@
+// backend/src/app.ts
 import "reflect-metadata";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import session from "express-session";
-import passport from "./passport";
-import { AppDataSource } from "./config/database";
-import "dotenv/config"; // <-- carga .env
-import "dotenv/config";
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import bcrypt from "bcryptjs"; // Importamos bcrypt
-import { User } from "@supabase/supabase-js";
-import type { Request, Response } from "express";
+import path from "path";
+import rateLimit from 'express-rate-limit';
+import passport from "./passport";
+import { AppDataSource } from "./config/database";
+import authRoutes from "./routes/auth";
 
+// Load environment variables
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['SESSION_SECRET', 'SSO_JWT_SECRET', 'FRONTEND_URL', 'FLASK_CHAT_URL'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+}
+
+// Create Express app
 const app = express();
 
-// Middlewares
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+// Rate limiter middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
 
+// Apply middlewares
+app.use(limiter);
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
+}));
 app.use(express.json());
-
-// Configuración de sesión
-app.use(
-  session({
-    secret: "mysecretkey",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Ruta básica de prueba
-app.get("/", (req, res) => {
-  res.send("API Hackaton funcionando correctamente 🚀");
-});
-
-function makeJti() {
-  // @ts-ignore
-  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+// Types and Interfaces
+interface User {
+  id: string | number;
+  email: string;
+  role: 'admin' | 'user' | 'comite';
 }
 
-app.get("/logout", (req: Request, res: Response) => {
-  const redirect =
-    (req.query.redirect as string) ||
-    process.env.FRONTEND_URL ||
-    "http://localhost:5173";
-
-  // passport 0.6+: req.logout requiere callback
-  req.logout((err) => {
-    if (err) {
-      console.error("logout error:", err);
-      return res.redirect(redirect);
-    }
-
-    // destruye session de express-session
-    if (req.session) {
-      req.session.destroy(() => {
-        // borra cookie de sesión (por defecto connect.sid)
-        res.clearCookie("connect.sid", { path: "/" });
-        return res.redirect(redirect);
-      });
-    } else {
-      return res.redirect(redirect);
-    }
-  });
-});
-
-app.post("/login", (req, res, next) => {
-  console.log("🔍 Datos recibidos en el backend:", req.body);
-
-  passport.authenticate("local", (err: Error | null, user: any | false) => {
-    if (err) return next(err);
-    if (!user)
-      return res
-        .status(401)
-        .json({ ok: false, message: "❌ Credenciales incorrectas" });
-
-    req.login(user, (err) => {
-      if (err) return next(err);
-
-      try {
-        const secret = process.env.SSO_JWT_SECRET;
-        if (!secret) {
-          console.error("❗ Falta SSO_JWT_SECRET (.env no cargado?)");
-          throw new Error("SSO_JWT_SECRET missing");
-        }
-
-        const payload = {
-          sub: String(user.id),
-          email: String(user.email || ""),
-          role: Number(user.role ?? 1), // 0=admin,1=user,2=comite
-        };
-
-        if (process.env.NODE_ENV !== "production") {
-          console.log("🔑 Firmando JWT con payload:", payload);
-        }
-
-        const token = jwt.sign(payload, secret, {
-          algorithm: "HS256",
-          expiresIn: "60s",
-          issuer: "hackaton-backend",
-          audience: "flask-chat",
-          jwtid: makeJti(),
-        });
-
-        const flask = process.env.FLASK_CHAT_URL || "http://localhost:5000";
-        const redirect = `${flask}/auth/consume?token=${encodeURIComponent(
-          token
-        )}`;
-
-        return res.json({ ok: true, redirect });
-      } catch (e: any) {
-        console.error("💥 Error generando token:", e?.name, e?.message);
-        return res
-          .status(500)
-          .json({
-            ok: false,
-            message: "Error generando token",
-            code: e?.name || "TokenError",
-          });
-      }
-    });
-  })(req, res, next);
-});
-
-// **Ruta protegida para administración**
-app.get("/admin", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.send("Panel del administrador 🛠️");
-  } else {
-    res.status(401).send("❌ Debes iniciar sesión para acceder al panel");
-  }
-});
-
-// ✅ Importa el JSON
-import raw from "./data/portafolio.json";
-
-type Service = {
+interface Service {
   id: string;
   title: string;
   text: string;
   img: string;
+}
+
+// Utility functions
+const makeJti = (): string => crypto.randomUUID();
+
+const createToken = (user: User): string => {
+  const payload = {
+    sub: String(user.id),
+    email: String(user.email),
+    role: String(user.role)
+  };
+
+  return jwt.sign(payload, process.env.SSO_JWT_SECRET!, {
+    algorithm: "HS256",
+    expiresIn: "1h",
+    issuer: "hackaton-backend",
+    audience: "flask-chat",
+    jwtid: makeJti(),
+  });
 };
 
-const services: Service[] = Array.isArray(raw)
-  ? (raw as Service[])
-  : ((raw as any).services as Service[]) ?? [];
+// Types for request bodies
+interface LoginRequest {
+  email: string;
+  password: string;
+}
 
-// GET /api/services → solo resumen para la lista
-app.get("/api/services", (_req, res) => {
-  const resumen = services.map(({ id, title, text, img }) => ({
-    id,
-    title,
-    text,
-    img,
-  }));
-  res.json(resumen);
-});
+// Route handlers
+const handleIndex: express.RequestHandler = (_req, res) => {
+  res.send("API Hackaton funcionando correctamente 🚀");
+};
 
-// GET /api/services/:id → detalle completo
-app.get("/api/services/:id", (req: any, res: any) => {
-  const service = services.find((s) => s.id === req.params.id);
-  if (!service)
-    return res.status(404).json({ error: "Servicio no encontrado" });
+const handleLogin: express.RequestHandler = (req, res, next) => {
+  const { email, password } = req.body as LoginRequest;
+
+  if (!email || !password) {
+    res.status(400).json({
+      ok: false,
+      message: "Email y password son requeridos",
+    });
+    return;
+  }
+
+  passport.authenticate(
+    "local",
+    (err: Error | null, user: User | false, info: any) => {
+      if (err) return next(err);
+      if (!user) {
+        res.status(401).json({ ok: false, message: info?.message || "Credenciales incorrectas" });
+        return;
+      }
+
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+
+        try {
+          const token = createToken(user as User);
+          const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get("host")}`;
+          const redirect = `${baseUrl}/chat-template?token=${encodeURIComponent(token)}`;
+          res.json({ ok: true, redirect });
+        } catch (e: any) {
+          console.error("💥 Error en el proceso de login:", e?.name, e?.message);
+          res.status(500).json({
+            ok: false,
+            message: "Error en el proceso de autenticación",
+            code: e?.name || "AuthError",
+          });
+        }
+      });
+    }
+  )(req, res, next);
+};
+
+const handleLogout: express.RequestHandler = (req, res) => {
+  const redirect = (req.query.redirect as string) || process.env.FRONTEND_URL!;
+
+  req.logout((err) => {
+    if (err) {
+      console.error("Error en logout:", err);
+      res.redirect(redirect);
+      return;
+    }
+    
+    if (req.session) {
+      req.session.destroy(() => {
+        res.clearCookie("connect.sid", { path: "/" });
+        res.redirect(redirect);
+      });
+    } else {
+      res.redirect(redirect);
+    }
+  });
+};
+
+// Services routes
+import servicesData from "./data/portafolio.json";
+const services: Service[] = Array.isArray(servicesData) 
+  ? servicesData 
+  : (servicesData as any).services ?? [];
+
+const handleGetServices: express.RequestHandler = (_req, res) => {
+  res.json(services.map(({ id, title, text, img }) => ({ id, title, text, img })));
+};
+
+const handleGetServiceById: express.RequestHandler = (req, res) => {
+  const service = services.find(s => s.id === req.params.id);
+  if (!service) {
+    res.status(404).json({ error: "Servicio no encontrado" });
+    return;
+  }
   res.json(service);
+};
+
+// Serve the chat template (static HTML) kept in `chat/templates` so the UI
+// can be independent from the AI service. Exposed at /chat-template.
+app.get('/chat-template', (req: Request, res: Response) => {
+  const filePath = path.join(__dirname, '..', '..', 'chat', 'templates', 'index.html');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error('Failed to send chat template:', err);
+      res.status(500).send('Error loading template');
+    }
+  });
 });
 
-// ✅ **Conexión a la base de datos y arranque del servidor**
+// Auth routes
+app.use("/api/auth", authRoutes);
+
+// Error handler middleware
+const errorHandler: express.ErrorRequestHandler = (err, _req, res, _next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    ok: false,
+    message: process.env.NODE_ENV === 'production' 
+      ? 'Internal Server Error' 
+      : err.message
+  });
+};
+
+// Mount routes
+app.get("/", handleIndex);
+app.post("/login", handleLogin);
+app.get("/logout", handleLogout);
+app.get("/api/services", handleGetServices);
+app.get("/api/services/:id", handleGetServiceById);
+app.use("/api/auth", authRoutes);
+
+// Apply error handler
+app.use(errorHandler);
+
+// Server startup
 export const startServer = async () => {
   try {
     await AppDataSource.initialize();
     console.log("📦 Conexión con la base de datos establecida");
 
     const PORT = process.env.PORT || 4000;
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
     });
+
+    // Handle uncaught errors
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    });
+
+    process.on('uncaughtException', (error) => {
+      console.error('Uncaught Exception:', error);
+      server.close(() => process.exit(1));
+    });
+
   } catch (error) {
     console.error("❌ Error al iniciar la app:", error);
+    process.exit(1);
   }
 };
 
