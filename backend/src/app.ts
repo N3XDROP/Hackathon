@@ -16,7 +16,7 @@ import authRoutes from "./routes/auth";
 dotenv.config();
 
 // Validate required environment variables
-const requiredEnvVars = ['SESSION_SECRET', 'SSO_JWT_SECRET', 'FRONTEND_URL', 'FLASK_CHAT_URL'];
+const requiredEnvVars = ['SESSION_SECRET', 'SSO_JWT_SECRET', 'FRONTEND_URL'];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     throw new Error(`Missing required environment variable: ${envVar}`);

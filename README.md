@@ -26,3 +26,12 @@ npm run dev <!-- Correr el proyecto respectivo -->
 ├── chat/ # Flask (IA + OCR)
 ├── .gitignore
 └── .README.md
+
+5. Alternancia entre bases de datos, en la nube o local
+cd backend
+- npm run use:xampp
+- npm run use:sb
+
+6. Correr programa
+cd backend & frontend (Por separado):
+- npm run dev

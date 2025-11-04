@@ -11,6 +11,7 @@
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
+    "mysql2": "^3.15.3",
     "nodemon": "^3.0.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
@@ -32,6 +33,8 @@
   },
   "scripts": {
     "start": "node src/",
-    "dev": "nodemon src/index.ts src/seeds.ts"
+    "dev": "nodemon src/index.ts src/seeds.ts",
+    "use:xampp": "powershell -NoProfile -ExecutionPolicy Bypass -File ./switch-db.ps1 -target mysql",
+    "use:sb": "powershell -NoProfile -ExecutionPolicy Bypass -File ./switch-db.ps1 -target supabase"
   }
 }
