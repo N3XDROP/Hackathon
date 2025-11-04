@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Login from "./components/Login/login";
+import Documents from "./components/IA/documents";
 import App from "./App";
 import Nosotros from "./pages/Nosotros";
 import Aliados from "./pages/Aliados";
@@ -23,6 +24,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/documents" element={<Documents />} />
           <Route path="/servicios" element={<Services />} />
           <Route path="/servicios/:serviceId" element={<ServiceDetail />} />
           <Route path="/api-test" element={<App />} />

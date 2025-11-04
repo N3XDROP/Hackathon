@@ -150,15 +150,18 @@ export default function Login() {
       setSuccess(true);
       setMsg("");
 
-      if ((data as any)?.ok && (data as any)?.redirect) {
-        setTimeout(() => {
-          window.location.href = (data as any).redirect as string; // SSO Flask
-        }, 900);
-        return;
-      }
+      // Redireccion antigua a la carpeta "CHAT"
+
+      // if ((data as any)?.ok && (data as any)?.redirect) {
+      //   setTimeout(() => {
+      //     window.location.href = (data as any).redirect as string; // SSO Flask
+      //   }, 900);
+      //   return;
+      // }
 
       setTimeout(() => {
-        navigate("/", { replace: true });
+        // Antes "/"
+        navigate("/documents", { replace: true });
       }, 900);
     } catch {
       setMsg("❌ Error al conectar con el servidor.");
