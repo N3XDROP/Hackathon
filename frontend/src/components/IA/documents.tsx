@@ -1,29 +1,215 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./documents.module.css";
+import { useNavigate } from "react-router-dom";
+
+const API_BASE = "http://localhost:4000/api/auth";
 
 export default function Documents() {
-  // TODO: reemplazar este estado por el rol real del usuario desde el backend
+  const navigate = useNavigate();
   const [role, setRole] = useState<"usuario" | "admin" | "comite">("usuario");
 
-  // TODO: traer los datos reales del usuario autenticado
   const username = "Usuario Demo";
+  const userId = 1;
 
+  const [form, setForm] = useState({
+    descripcionEntidad: "",
+    tipoEntidad: "",
+    objetoSocial: "",
+    direccionFisica: "",
+    residenciaBoyaca: "",
+  });
+
+  const [files, setFiles] = useState<{ [key: string]: File | null }>({
+    rut: null,
+    camara_comercio: null,
+    cedula: null,
+    carta_intencion: null,
+    carta_aceptacion: null,
+    antecedentes_contraloria: null,
+    antecedentes_procuraduria: null,
+    antecedentes_policia: null,
+    antecedentes_rnmc: null,
+  });
+
+  const [mensaje, setMensaje] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [docId, setDocId] = useState<number | null>(null);
+  const [documentData, setDocumentData] = useState<any>(null);
+  const [documentList, setDocumentList] = useState<any[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+
+  // ===================== FUNCIONES =====================
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files: selected } = e.target;
+    if (selected && selected[0]) {
+      setFiles((prev) => ({ ...prev, [name]: selected[0] }));
+    }
+  };
+
+  // -------------------- USUARIO --------------------
+  const handleSubmitAll = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMensaje("");
+    if (loading) return;
+
+    try {
+      setLoading(true);
+      const createResp = await fetch(`${API_BASE}/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, ...form }),
+      });
+
+      const created = await createResp.json();
+      if (!createResp.ok)
+        throw new Error(created.message || "Error al crear documento.");
+
+      const newDocId = created.document.id;
+      setDocId(newDocId);
+
+      for (const key in files) {
+        const file = files[key];
+        if (!file) continue;
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("field", key);
+
+        await fetch(`${API_BASE}/upload/${newDocId}`, {
+          method: "POST",
+          body: formData,
+        });
+      }
+
+      setMensaje("✅ Datos y archivos enviados correctamente.");
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err: any) {
+      console.error(err);
+      setMensaje("❌ Error al subir documentos.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -------------------- ADMIN & COMITÉ --------------------
+  const fetchAllDocs = async () => {
+    try {
+      const resp = await fetch(`${API_BASE}/all`);
+      const data = await resp.json();
+      if (resp.ok) setDocumentList(data.documents);
+      else setMensaje("No hay documentos disponibles.");
+    } catch (err) {
+      console.error(err);
+      setMensaje("Error al obtener documentos.");
+    }
+  };
+
+  const fetchDocsById = async (id: number) => {
+    try {
+      const resp = await fetch(`${API_BASE}/user/${id}`);
+      const data = await resp.json();
+      if (resp.ok && data.documents?.length > 0) {
+        const doc = data.documents[0];
+        setDocumentData(doc);
+        setDocId(doc.id);
+        fetchUploadedFiles(doc.id);
+      } else {
+        setMensaje("No se encontraron documentos.");
+      }
+    } catch (err) {
+      console.error(err);
+      setMensaje("Error al buscar documento.");
+    }
+  };
+
+  const fetchUploadedFiles = async (id: number) => {
+    try {
+      const resp = await fetch(`${API_BASE}/files/${id}`);
+      const data = await resp.json();
+      if (resp.ok) setUploadedFiles(data.files || []);
+      else setUploadedFiles([]);
+    } catch {
+      setUploadedFiles([]);
+    }
+  };
+
+  const handleAdminUpload = async (field: string) => {
+    if (!docId || !files[field]) return;
+    const formData = new FormData();
+    formData.append("file", files[field]!);
+    formData.append("field", field);
+
+    const resp = await fetch(`${API_BASE}/admin/upload/${docId}`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await resp.json();
+    if (resp.ok) {
+      setMensaje("✅ Archivo actualizado.");
+      fetchUploadedFiles(docId);
+    } else {
+      setMensaje(data.message);
+    }
+  };
+
+  const handleAdminDelete = async (field: string) => {
+    if (!docId) return;
+    const resp = await fetch(`${API_BASE}/admin/delete/${docId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ field }),
+    });
+    const data = await resp.json();
+    if (resp.ok) {
+      setMensaje("🗑️ Archivo eliminado.");
+      fetchUploadedFiles(docId);
+    } else setMensaje(data.message);
+  };
+
+  const handleStatusChange = async (status: "aprobado" | "rechazado") => {
+    if (!docId) return;
+    const resp = await fetch(`${API_BASE}/status/${docId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    const data = await resp.json();
+    if (resp.ok) {
+      setMensaje(`📘 Estado actualizado a ${status}.`);
+      fetchAllDocs();
+    } else setMensaje(data.message);
+  };
+
+  useEffect(() => {
+    if (role !== "usuario") fetchAllDocs();
+  }, [role]);
+
+  // ===================== RENDER =====================
   return (
     <main className={styles.container}>
       <section className={styles.card}>
-        {/* Encabezado con información del usuario */}
         <header className={styles.header}>
           <h1 className={styles.title}>Panel de Documentos</h1>
           <p className={styles.subtitle}>
             Bienvenido, <strong>{username}</strong>
           </p>
 
-          {/* Selector temporal de rol (solo para pruebas locales) */}
           <div className={styles.roleSelect}>
             <label>Cambiar rol:</label>
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value as any)}
+              onChange={(e) => {
+                setDocumentData(null);
+                setRole(e.target.value as any);
+              }}
             >
               <option value="usuario">Usuario</option>
               <option value="admin">Administrador</option>
@@ -32,225 +218,179 @@ export default function Documents() {
           </div>
         </header>
 
-        {/* ---------------------- VISTA USUARIO ---------------------- */}
+        {/* ==================== USUARIO ==================== */}
         {role === "usuario" && (
-          <form
-            className={styles.form}
-            // TODO: reemplazar acción de subida por llamada a tu backend Flask
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log("Subir documentos");
-            }}
-          >
-            {/* Información de la Entidad */}
+          <form className={styles.form} onSubmit={handleSubmitAll}>
             <div className={styles.section}>
               <h2>Información de la Entidad</h2>
-              <div className={styles.formGroup}>
-                <label>
-                  Descripción de la entidad (misión, visión, actividades TIC):
-                </label>
-                <textarea
-                  name="descripcion_entidad"
-                  placeholder="Describe la misión, visión y actividades relacionadas con TIC de tu entidad..."
-                ></textarea>
-              </div>
-              <div className={styles.formGroup}>
-                <label>Tipo de entidad (natural o jurídica):</label>
-                <input
-                  type="text"
-                  name="tipo_entidad"
-                  placeholder="Ej: Persona jurídica, Persona natural"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Objeto social relacionado con TIC:</label>
-                <input
-                  type="text"
-                  name="objeto_social"
-                  placeholder="Describe el objeto social relacionado con tecnología"
-                />
-              </div>
+              {Object.entries(form).map(([key, val]) => (
+                <div className={styles.formGroup} key={key}>
+                  <label>{key.replaceAll("_", " ")}:</label>
+                  <input name={key} value={val} onChange={handleChange} />
+                </div>
+              ))}
             </div>
 
-            {/* Documentos Requeridos */}
             <div className={styles.section}>
               <h2>Documentos Requeridos</h2>
-              <div className={styles.formGroup}>
-                <label>RUT actualizado:</label>
-                <input type="file" name="rut" accept=".pdf,.png,.jpg,.jpeg" />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Certificado de Cámara de Comercio (vigente):</label>
-                <input
-                  type="file"
-                  name="camara_comercio"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Cédula del representante legal:</label>
-                <input
-                  type="file"
-                  name="cedula"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
+              {Object.keys(files).map((key) => (
+                <div className={styles.formGroup} key={key}>
+                  <label>{key.replaceAll("_", " ")}:</label>
+                  <input type="file" name={key} onChange={handleFileChange} />
+                </div>
+              ))}
             </div>
 
-            {/* Documentos Firmados */}
-            <div className={styles.section}>
-              <h2>Documentos Firmados</h2>
-              <div className={styles.formGroup}>
-                <label>Carta de Intención de Afiliación (firmada):</label>
-                <input
-                  type="file"
-                  name="carta_intencion"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>
-                  Carta de Aceptación de Estatutos, Reglamentos Internos y
-                  Políticas (firmada):
-                </label>
-                <input
-                  type="file"
-                  name="carta_aceptacion"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
+            <div className={styles.actions}>
+              <button type="submit" disabled={loading}>
+                {loading ? "Subiendo..." : "🚀 Finalizar"}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                style={{ background: "#ccc", color: "#000" }}
+              >
+                Volver
+              </button>
             </div>
 
-            {/* Antecedentes del Representante */}
-            <div className={styles.section}>
-              <h2>Antecedentes del Representante Legal</h2>
-              <div className={styles.formGroup}>
-                <label>Antecedentes Contraloría:</label>
-                <input
-                  type="file"
-                  name="antecedentes_contraloria"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Antecedentes Procuraduría:</label>
-                <input
-                  type="file"
-                  name="antecedentes_procuraduria"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Antecedentes Policía:</label>
-                <input
-                  type="file"
-                  name="antecedentes_policia"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Antecedentes RNMC:</label>
-                <input
-                  type="file"
-                  name="antecedentes_rnmc"
-                  accept=".pdf,.png,.jpg,.jpeg"
-                />
-              </div>
-            </div>
-
-            {/* Información Adicional */}
-            <div className={styles.section}>
-              <h2>Información Adicional</h2>
-              <div className={styles.formGroup}>
-                <label>Dirección física:</label>
-                <input
-                  type="text"
-                  name="direccion_fisica"
-                  placeholder="Dirección completa de la entidad"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Residencia en Boyacá:</label>
-                <input
-                  type="text"
-                  name="residencia_boyaca"
-                  placeholder="Información sobre residencia en Boyacá"
-                />
-              </div>
-            </div>
-
-            <button type="submit">
-              🚀 Analizar Documentos con IA
-            </button>
+            {mensaje && <p className={styles.message}>{mensaje}</p>}
           </form>
         )}
 
-        {/* ---------------------- VISTA ADMIN ---------------------- */}
-        {role === "admin" && (
+        {/* ==================== ADMIN & COMITÉ ==================== */}
+        {(role === "admin" || role === "comite") && !documentData && (
           <div className={styles.section}>
-            <h2>Gestión de Documentos</h2>
-            <p>Consulta los documentos enviados por los usuarios.</p>
-            {/* TODO: Mapear documentos del backend */}
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Usuario</th>
-                  <th>Documento</th>
-                  <th>Fecha</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>juanperez@mail.com</td>
-                  <td>InformeAnual.pdf</td>
-                  <td>2025-11-04</td>
-                  <td>
-                    <button>Ver</button>
-                    <button>Eliminar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <h2>Solicitudes registradas</h2>
+            {documentList.length > 0 ? (
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Tipo Entidad</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {documentList.map((doc) => (
+                    <tr key={doc.id}>
+                      <td>{doc.id}</td>
+                      <td>{doc.userId}</td>
+                      <td>{doc.tipoEntidad}</td>
+                      <td>
+                        {doc.estado === "aprobado"
+                          ? "✅ Aprobado"
+                          : doc.estado === "rechazado"
+                          ? "❌ Rechazado"
+                          : "⏳ Pendiente"}
+                      </td>
+                      <td>
+                        <button onClick={() => fetchDocsById(doc.userId)}>
+                          Ver solicitud
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No hay solicitudes.</p>
+            )}
           </div>
         )}
 
-        {/* ---------------------- VISTA COMITÉ ---------------------- */}
-        {role === "comite" && (
+        {(role === "admin" || role === "comite") && documentData && (
           <div className={styles.section}>
-            <h2>Revisión del Comité</h2>
+            <h2>Detalles de la solicitud #{documentData.id}</h2>
+
             <p>
-              Revisa, aprueba o rechaza los documentos subidos por los usuarios.
+              <strong>Descripción:</strong> {documentData.descripcionEntidad}
+            </p>
+            <p>
+              <strong>Tipo:</strong> {documentData.tipoEntidad}
+            </p>
+            <p>
+              <strong>Objeto social:</strong> {documentData.objetoSocial}
+            </p>
+            <p>
+              <strong>Dirección:</strong> {documentData.direccionFisica}
+            </p>
+            <p>
+              <strong>Residencia:</strong> {documentData.residenciaBoyaca}
+            </p>
+            <p>
+              <strong>Estado:</strong> {documentData.estado}
             </p>
 
-            {/* TODO: Mapear documentos asignados al comité */}
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Usuario</th>
-                  <th>Tipo de Documento</th>
-                  <th>Archivo</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>andres@mail.com</td>
-                  <td>RUT actualizado</td>
-                  <td>
-                    <button>Ver PDF</button>
-                  </td>
-                  <td>En revisión</td>
-                  <td className={styles.actions}>
-                    <button>Aprobar</button>
-                    <button>Rechazar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <h3>Archivos</h3>
+            {Object.keys(files).map((key) => {
+              const subido = uploadedFiles.some((f) => f.startsWith(key));
+              return (
+                <div
+                  className={`${styles.formGroup} ${
+                    subido ? styles.uploaded : styles.missing
+                  }`}
+                  key={key}
+                >
+                  <label>
+                    {subido ? "🟩 " : "🟥 "}
+                    {key.replaceAll("_", " ")}:
+                  </label>
+                  <div className={styles.actions}>
+                    <button
+                      onClick={() =>
+                        window.open(
+                          `${API_BASE}/files/${documentData.id}/${key}`
+                        )
+                      }
+                      disabled={!subido}
+                    >
+                      Ver
+                    </button>
+
+                    {role === "admin" && (
+                      <>
+                        <input
+                          type="file"
+                          name={key}
+                          onChange={handleFileChange}
+                        />
+                        <button onClick={() => handleAdminUpload(key)}>
+                          Actualizar
+                        </button>
+                        <button onClick={() => handleAdminDelete(key)}>
+                          Eliminar
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {role === "comite" && (
+              <div className={styles.actions}>
+                <button onClick={() => handleStatusChange("aprobado")}>
+                  ✅ Aprobar
+                </button>
+                <button onClick={() => handleStatusChange("rechazado")}>
+                  ❌ Rechazar
+                </button>
+              </div>
+            )}
+
+            <button
+              style={{ marginTop: "1rem" }}
+              onClick={() => setDocumentData(null)}
+            >
+              ← Volver a la lista
+            </button>
           </div>
         )}
+
+        {mensaje && <p className={styles.message}>{mensaje}</p>}
       </section>
     </main>
   );

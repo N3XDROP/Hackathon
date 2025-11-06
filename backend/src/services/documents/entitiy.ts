@@ -40,50 +40,32 @@ export class DocumentEntity {
   objetoSocial!: string;
 
   /** Documentos requeridos */
-  @Column({ name: "rut", nullable: true })
-  rut!: string;
   @Column({ name: "rut_subido", default: false })
   rutSubido!: boolean;
 
-  @Column({ name: "camara_comercio", nullable: true })
-  camaraComercio!: string;
   @Column({ name: "camara_comercio_subido", default: false })
   camaraComercioSubido!: boolean;
 
-  @Column({ name: "cedula", nullable: true })
-  cedula!: string;
   @Column({ name: "cedula_subido", default: false })
   cedulaSubido!: boolean;
 
   /** Documentos firmados */
-  @Column({ name: "carta_intencion", nullable: true })
-  cartaIntencion!: string;
   @Column({ name: "carta_intencion_subido", default: false })
   cartaIntencionSubido!: boolean;
 
-  @Column({ name: "carta_aceptacion", nullable: true })
-  cartaAceptacion!: string;
   @Column({ name: "carta_aceptacion_subido", default: false })
   cartaAceptacionSubido!: boolean;
 
   /** Antecedentes */
-  @Column({ name: "antecedentes_contraloria", nullable: true })
-  antecedentesContraloria!: string;
   @Column({ name: "antecedentes_contraloria_subido", default: false })
   antecedentesContraloriaSubido!: boolean;
 
-  @Column({ name: "antecedentes_procuraduria", nullable: true })
-  antecedentesProcuraduria!: string;
   @Column({ name: "antecedentes_procuraduria_subido", default: false })
   antecedentesProcuraduriaSubido!: boolean;
 
-  @Column({ name: "antecedentes_policia", nullable: true })
-  antecedentesPolicia!: string;
   @Column({ name: "antecedentes_policia_subido", default: false })
   antecedentesPoliciaSubido!: boolean;
 
-  @Column({ name: "antecedentes_rnmc", nullable: true })
-  antecedentesRnmc!: string;
   @Column({ name: "antecedentes_rnmc_subido", default: false })
   antecedentesRnmcSubido!: boolean;
 

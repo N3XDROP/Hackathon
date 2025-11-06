@@ -211,6 +211,9 @@ app.get("/api/services", handleGetServices);
 app.get("/api/services/:id", handleGetServiceById);
 app.use("/api/auth", authRoutes);
 
+// Servir archivos subidos
+app.use("/uploads", express.static(path.join(__dirname, "..", "..", "uploads")));
+
 // Apply error handler
 app.use(errorHandler);
 
