@@ -1,6 +1,6 @@
 import { Router, type RequestHandler } from "express";
-import { AppDataSource } from "@/config/database";
-import { UserEntity, UserRole } from "@/services/users/entity";
+import { AppDataSource } from "../config/database";
+import { UserEntity, UserRole } from "../services/users/entity";
 
 const router = Router();
 

@@ -2,7 +2,9 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { UserEntity } from "@/services/users/entity";
+
+import { UserEntity } from "../services/users/entity";
+
 
 dotenv.config();
 
