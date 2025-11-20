@@ -1,13 +1,15 @@
 import { Router, Request, Response } from "express";
 import { AppDataSource } from "@/config/database";
-import { UserEntity, UserRole } from "@/services/users/entity";
-import { DocumentEntity, DocumentStatus } from "@/services/documents/entitiy";
-import multer from "multer";
+import { UserEntity } from "@/services/users/entity";
+
 import fs from "fs";
 import path from "path";
+import DocumentEntity, { DocumentStatus } from "@/services/documents/entitiy";
+import multer from "multer";
+
+
 
 const router = Router();
-
 // 📁 Configuración de multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -23,8 +25,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+
 // 🟩 Crear documento
-const createDocument = async (req: Request, res: Response): Promise<void> => {
+router.post("/create", async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId, descripcionEntidad, tipoEntidad, objetoSocial, direccionFisica, residenciaBoyaca } = req.body;
 
@@ -61,76 +64,6 @@ const createDocument = async (req: Request, res: Response): Promise<void> => {
     console.error("Error al crear documento:", error);
     res.status(500).json({ ok: false, message: "Error interno del servidor." });
   }
-};
-
-// 📂 Listar archivos subidos para un documento
-router.get("/files/:docId", (req: Request, res: Response): void => {
-  const { docId } = req.params;
-  const dir = path.join(__dirname, "..", "..", "uploads", docId);
-
-  if (!fs.existsSync(dir)) {
-    res.json({ files: [] });
-    return;
-  }
-
-  const files = fs.readdirSync(dir);
-  res.json({ files });
-});
-
-// ✅ Actualizar estado del documento (aprobado / rechazado)
-router.put("/status/:id", async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  const { status } = req.body;
-  try {
-    const repo = AppDataSource.getRepository(DocumentEntity);
-    const document = await repo.findOne({ where: { id: Number(id) } });
-
-    if (!document) {
-      res.status(404).json({ message: "Documento no encontrado." });
-      return;
-    }
-
-    document.estado = status;
-    await repo.save(document);
-    res.json({ message: `Estado actualizado a ${status}.`, document });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al actualizar estado." });
-  }
-});
-
-// 🟩 Obtener todas las solicitudes (para admin o comité)
-router.get("/all", async (req: Request, res: Response): Promise<void> => {
-  try {
-    const repo = AppDataSource.getRepository(DocumentEntity);
-    const docs = await repo.find();
-    res.json({ ok: true, documents: docs });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ ok: false, message: "Error al obtener documentos." });
-  }
-});
-
-// 📂 Nueva ruta: servir archivo por campo
-router.get("/files/:docId/:field", (req: Request, res: Response) => {
-  const { docId, field } = req.params;
-  const dir = path.join(__dirname, "..", "..", "uploads", docId);
-
-  if (!fs.existsSync(dir)) {
-    res.status(404).send("Directorio no encontrado.");
-    return;
-  }
-
-  const files = fs.readdirSync(dir);
-  const match = files.find((f) => f.startsWith(field)); // busca rut.*, cedula.*, etc.
-
-  if (!match) {
-    res.status(404).send("Archivo no encontrado.");
-    return;
-  }
-
-  const filePath = path.join(dir, match);
-  res.sendFile(filePath);
 });
 
 // 🟦 Subir archivo (usuario o admin)
@@ -249,76 +182,55 @@ router.delete("/admin/delete/:docId", async (req: Request, res: Response): Promi
   }
 });
 
-// 🟨 Comité: aprobar/rechazar
-const updateStatus = async (req: Request, res: Response): Promise<void> => {
+
+// 📂 Listar archivos subidos para un documento
+router.get("/files/:docId", (req: Request, res: Response): void => {
+  const { docId } = req.params;
+  const dir = path.join(__dirname, "..", "..", "uploads", docId);
+
+  if (!fs.existsSync(dir)) {
+    res.json({ files: [] });
+    return;
+  }
+
+  const files = fs.readdirSync(dir);
+  res.json({ files });
+});
+
+// ✅ Actualizar estado del documento (aprobado / rechazado)
+router.put("/status/:id", async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const { status } = req.body;
   try {
-    const { docId } = req.params;
-    const { status } = req.body;
-
     const repo = AppDataSource.getRepository(DocumentEntity);
-    const document = await repo.findOne({ where: { id: Number(docId) } });
-    if (!document) {
-      res.status(404).json({ ok: false, message: "Documento no encontrado." });
-      return;
-    }
+    const document = await repo.findOne({ where: { id: Number(id) } });
 
-    if (![DocumentStatus.APROBADO, DocumentStatus.RECHAZADO].includes(status)) {
-      res.status(400).json({ ok: false, message: "Estado inválido." });
+    if (!document) {
+      res.status(404).json({ message: "Documento no encontrado." });
       return;
     }
 
     document.estado = status;
     await repo.save(document);
-    res.json({ ok: true, message: "Estado actualizado.", document });
-  } catch (e) {
-    res.status(500).json({ ok: false, message: "Error al actualizar estado." });
+    res.json({ message: `Estado actualizado a ${status}.`, document });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al actualizar estado." });
   }
-};
+});
 
-// 🟦 Obtener documentos
-const getDocumentsByUser = async (req: Request, res: Response): Promise<void> => {
+// 🟩 Obtener todas las solicitudes (para admin o comité)
+router.get("/all", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId } = req.params;
     const repo = AppDataSource.getRepository(DocumentEntity);
-    const docs = await repo.find({ where: { userId: Number(userId) } });
-    if (!docs.length) {
-      res.status(404).json({ ok: false, message: "No hay documentos." });
-      return;
-    }
+    const docs = await repo.find();
     res.json({ ok: true, documents: docs });
   } catch (e) {
+    console.error(e);
     res.status(500).json({ ok: false, message: "Error al obtener documentos." });
   }
-};
-
-// 🟩 Registro
-const register = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    res.status(400).json({ ok: false, message: "Campos incompletos." });
-    return;
-  }
-
-  try {
-    const repo = AppDataSource.getRepository(UserEntity);
-    const exists = await repo.findOne({ where: { email } });
-    if (exists) {
-      res.status(409).json({ ok: false, message: "Correo ya registrado." });
-      return;
-    }
-
-    const user = repo.create({ name, email, password, role: UserRole.user });
-    await repo.save(user);
-    res.json({ ok: true, message: "Usuario creado.", id: user.id });
-  } catch (e) {
-    res.status(500).json({ ok: false, message: "Error al registrar usuario." });
-  }
-};
-
-// 🔗 Rutas
-router.post("/register", register);
-router.post("/create", createDocument);
-router.get("/user/:userId", getDocumentsByUser);
-router.put("/status/:docId", updateStatus);
+});
 
 export default router;
+
+

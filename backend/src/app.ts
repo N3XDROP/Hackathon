@@ -11,6 +11,7 @@ import rateLimit from 'express-rate-limit';
 import passport from "./passport";
 import { AppDataSource } from "./config/database";
 import authRoutes from "./routes/auth";
+import documentsRoutes from "./routes/documents";
 
 // Load environment variables
 dotenv.config();
@@ -191,6 +192,7 @@ app.get('/chat-template', (req: Request, res: Response) => {
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+app.use("/api/documents", documentsRoutes);
 
 // Error handler middleware
 const errorHandler: express.ErrorRequestHandler = (err, _req, res, _next) => {
