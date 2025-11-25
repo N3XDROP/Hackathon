@@ -47,7 +47,7 @@ export default function Documents() {
   const [mensaje, setMensaje] = useState("");
 
   // ----------------- Helpers -----------------
-  const getAuthHeaders = () => {
+  const getAuthHeaders = (): Record<string, string> => {
     const token = localStorage.getItem("token");
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
@@ -187,22 +187,33 @@ export default function Documents() {
 
   const fetchDocsById = async (id: number) => {
     try {
-      const resp = await fetch(`${API_BASE}/documents/user/${id}`, {
+      console.log(`🔍 Llamando a /api/auth/user/${id}`);
+      const resp = await fetch(`${API_BASE}/auth/user/${id}`, {
         headers: { ...getAuthHeaders() },
       });
 
-      if (!resp.ok) return;
+      console.log(`📝 Respuesta: ${resp.status} ${resp.statusText}`);
+
+      if (!resp.ok) {
+        console.error(`❌ Error ${resp.status}:`, await resp.text());
+        setMensaje(`Error al obtener documentos (${resp.status})`);
+        return;
+      }
 
       const data = await resp.json();
+      console.log("✅ Documentos recibidos:", data);
 
       if (data.documents?.length > 0) {
         const doc = data.documents[0];
         setDocumentData(doc);
         setDocId(doc.id);
         fetchUploadedFiles(doc.id);
+      } else {
+        setMensaje("No se encontraron documentos para este usuario.");
       }
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error en fetchDocsById:", err);
+      setMensaje(`Error al obtener documentos: ${err}`);
     }
   };
 

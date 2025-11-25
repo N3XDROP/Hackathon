@@ -9,6 +9,7 @@ import rateLimit from 'express-rate-limit';
 import { AppDataSource } from "./config/database";
 import { AuthRoutes } from "./routes/auth/auth/routes";
 import documentsRoutes from "./routes/documents";
+import authRoutesLegacy from "./routes/auth"; // 👈 Import del archivo auth.ts
 import { ServerConstants } from "./constants";
 
 // Load environment variables
@@ -123,6 +124,7 @@ app.get('/chat-template', (req: Request, res: Response) => {
 // Auth routes
 const authRoutes = new AuthRoutes().routes();
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutesLegacy); // 👈 Monta también las rutas del archivo auth.ts
 app.use("/api/documents", documentsRoutes);
 
 // Error handler middleware
