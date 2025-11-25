@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./Register.module.css";
 
-const API_URL = "http://localhost:4000/api/auth/register";
+const API_URL = "http://localhost:4000/api/auth/createUser";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -47,8 +47,8 @@ export default function Register() {
       const resp = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // 🔒 El backend forzará el rol a "admin". Aquí NO enviamos role.
-        body: JSON.stringify({ name, email, password }),
+        // Enviamos role como "0" (USER por defecto)
+        body: JSON.stringify({ name, email, password, role: "0" }),
         credentials: "include",
       });
 

@@ -2,22 +2,20 @@
 import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import session from "express-session";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import path from "path";
 import rateLimit from 'express-rate-limit';
-import passport from "./passport";
 import { AppDataSource } from "./config/database";
-import authRoutes from "./routes/auth";
+import { AuthRoutes } from "./routes/auth/auth/routes";
 import documentsRoutes from "./routes/documents";
+import { ServerConstants } from "./constants";
 
 // Load environment variables
 dotenv.config();
 
 // Validate required environment variables
-const requiredEnvVars = ['SESSION_SECRET', 'SSO_JWT_SECRET', 'FRONTEND_URL'];
+const requiredEnvVars = ['SSO_JWT_SECRET', 'FRONTEND_URL'];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     throw new Error(`Missing required environment variable: ${envVar}`);
@@ -35,23 +33,12 @@ const limiter = rateLimit({
 
 // Apply middlewares
 app.use(limiter);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: "http://localhost:5173",
   credentials: true,
 }));
 app.use(express.json());
-app.use(session({
-  secret: process.env.SESSION_SECRET!,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Types and Interfaces
 interface User {
@@ -60,30 +47,27 @@ interface User {
   role: 'admin' | 'user' | 'comite';
 }
 
-interface Service {
-  id: string;
-  title: string;
-  text: string;
-  img: string;
+// Middleware para verificar JWT
+interface JwtPayload {
+  sub: string;
+  email: string;
+  role: string;
 }
 
-// Utility functions
-const makeJti = (): string => crypto.randomUUID();
+const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
-const createToken = (user: User): string => {
-  const payload = {
-    sub: String(user.id),
-    email: String(user.email),
-    role: String(user.role)
-  };
+  if (!token) {
+    return res.status(401).json({ ok: false, message: "Token no proporcionado" });
+  }
 
-  return jwt.sign(payload, process.env.SSO_JWT_SECRET!, {
-    algorithm: "HS256",
-    expiresIn: "1h",
-    issuer: "hackaton-backend",
-    audience: "flask-chat",
-    jwtid: makeJti(),
-  });
+  try {
+    const decoded = jwt.verify(token, process.env.SSO_JWT_SECRET!) as JwtPayload;
+    (req as any).user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ ok: false, message: "Token inválido o expirado" });
+  }
 };
 
 // Types for request bodies
@@ -97,70 +81,16 @@ const handleIndex: express.RequestHandler = (_req, res) => {
   res.send("API Hackaton funcionando correctamente 🚀");
 };
 
-const handleLogin: express.RequestHandler = (req, res, next) => {
-  const { email, password } = req.body as LoginRequest;
-
-  if (!email || !password) {
-    res.status(400).json({
-      ok: false,
-      message: "Email y password son requeridos",
-    });
-    return;
-  }
-
-  passport.authenticate(
-    "local",
-    (err: Error | null, user: User | false, info: any) => {
-      if (err) return next(err);
-      if (!user) {
-        res.status(401).json({ ok: false, message: info?.message || "Credenciales incorrectas" });
-        return;
-      }
-
-      req.logIn(user, (loginErr) => {
-        if (loginErr) return next(loginErr);
-
-        try {
-          const token = createToken(user as User);
-          const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get("host")}`;
-          const redirect = `${baseUrl}/chat-template?token=${encodeURIComponent(token)}`;
-          res.json({ ok: true, redirect });
-        } catch (e: any) {
-          console.error("💥 Error en el proceso de login:", e?.name, e?.message);
-          res.status(500).json({
-            ok: false,
-            message: "Error en el proceso de autenticación",
-            code: e?.name || "AuthError",
-          });
-        }
-      });
-    }
-  )(req, res, next);
-};
-
-const handleLogout: express.RequestHandler = (req, res) => {
-  const redirect = (req.query.redirect as string) || process.env.FRONTEND_URL!;
-
-  req.logout((err) => {
-    if (err) {
-      console.error("Error en logout:", err);
-      res.redirect(redirect);
-      return;
-    }
-    
-    if (req.session) {
-      req.session.destroy(() => {
-        res.clearCookie("connect.sid", { path: "/" });
-        res.redirect(redirect);
-      });
-    } else {
-      res.redirect(redirect);
-    }
-  });
-};
-
 // Services routes
 import servicesData from "./data/portafolio.json";
+
+interface Service {
+  id: string;
+  title: string;
+  text: string;
+  img: string;
+}
+
 const services: Service[] = Array.isArray(servicesData) 
   ? servicesData 
   : (servicesData as any).services ?? [];
@@ -191,6 +121,7 @@ app.get('/chat-template', (req: Request, res: Response) => {
 });
 
 // Auth routes
+const authRoutes = new AuthRoutes().routes();
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentsRoutes);
 
@@ -207,13 +138,8 @@ const errorHandler: express.ErrorRequestHandler = (err, _req, res, _next) => {
 
 // Mount routes
 app.get("/", handleIndex);
-app.post("/login", handleLogin);
-app.get("/logout", handleLogout);
 app.get("/api/services", handleGetServices);
 app.get("/api/services/:id", handleGetServiceById);
-app.use("/api/auth", authRoutes);
-
-// Servir archivos subidos
 app.use("/uploads", express.static(path.join(__dirname, "..", "..", "uploads")));
 
 // Apply error handler
@@ -225,7 +151,7 @@ export const startServer = async () => {
     await AppDataSource.initialize();
     console.log("📦 Conexión con la base de datos establecida");
 
-    const PORT = process.env.PORT || 4000;
+    const PORT = ServerConstants.PORT;
     const server = app.listen(PORT, () => {
       console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
     });

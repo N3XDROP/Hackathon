@@ -12,5 +12,7 @@ export const EndPoints = {
 };
 
 export const ServerConstants = {
-	PORT: process.env.PORTAPP
+	PORT: process.env.PORT || 4000,
+	JWTSECRET: process.env.SSO_JWT_SECRET || "your-secret-key",
+	JWTSECRETREFRESH: process.env.JWT_REFRESH_SECRET || "your-refresh-secret-key"
 };

@@ -291,7 +291,7 @@ const getDocumentsByUser = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-// 🟩 Registro
+// 🟩 Registro - DEPRECATED: Use /api/auth/createUser instead
 const register = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {

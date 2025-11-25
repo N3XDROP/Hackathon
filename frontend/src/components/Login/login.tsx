@@ -6,8 +6,8 @@ import "./login.module.css";
 type Captcha = { a: number; b: number; op: "+" | "-" };
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
-// Tu backend expone POST /login
-const LOGIN_PATH = "/login";
+// Tu backend expone POST /api/auth/login
+const LOGIN_PATH = "/api/auth/login";
 
 const now = () => Date.now();
 
@@ -80,95 +80,106 @@ export default function Login() {
     setCaptchaInput("");
   }
 
-  async function handleLogin(e?: React.FormEvent) {
-    e?.preventDefault();
-    if (locked) return;
+ async function handleLogin(e?: React.FormEvent) {
+  e?.preventDefault();
+  if (locked) return;
 
-    if (!email || !password) {
-      setMsg("⚠️ Completa todos los campos.");
-      return;
-    }
-    if (!emailValid) {
-      setMsg("⚠️ Ingresa un correo válido.");
-      return;
-    }
+  if (!email || !password) {
+    setMsg("⚠️ Completa todos los campos.");
+    return;
+  }
+  if (!emailValid) {
+    setMsg("⚠️ Ingresa un correo válido.");
+    return;
+  }
 
-    // Calcula el resultado del captcha (puede ser negativo)
-    const expected =
-      captcha.op === "+" ? captcha.a + captcha.b : captcha.a - captcha.b;
+  const expected =
+    captcha.op === "+" ? captcha.a + captcha.b : captcha.a - captcha.b;
 
-    if (Number(captchaInput) !== expected) {
-      setMsg("❌ Captcha incorrecto.");
+  if (Number(captchaInput) !== expected) {
+    setMsg("❌ Captcha incorrecto.");
+    resetCaptcha();
+    return;
+  }
+
+  try {
+    setBusy(true);
+    setMsg("");
+
+    const resp = await fetch(`${API_URL}${LOGIN_PATH}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // 👈 NECESARIO PARA COOKIES HTTPONLY
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await resp.json().catch(() => ({}));
+
+    if (!resp.ok) {
+      // aumentamos los fallos
+      const newFails = failCount + 1;
+      setFailCount(newFails);
+      localStorage.setItem("login_fail_count", String(newFails));
+
+      const ms = nextLockMs(newFails);
+      if (ms > 0) {
+        const until = now() + ms;
+        setLockUntil(until);
+        localStorage.setItem("login_lock_until", String(until));
+        setMsg(
+          data?.message ||
+            `❌ Credenciales inválidas. Reintenta en ${Math.ceil(ms / 1000)}s.`
+        );
+      } else {
+        setMsg(data?.message || "❌ Usuario o contraseña incorrectos.");
+      }
       resetCaptcha();
       return;
     }
 
-    try {
-      setBusy(true);
-      setMsg("");
+    // 👇👇👇 **SOLUCIÓN REAL DEL PROBLEMA**
 
-      const resp = await fetch(`${API_URL}${LOGIN_PATH}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      });
+    if (data?.user) {
+      console.log("👤 Usuario recibido:", data.user);
 
-      const data = await resp.json().catch(() => ({} as any));
+      // Guardar datos del usuario en localStorage
+      localStorage.setItem(
+  "user",
+  JSON.stringify({
+    id: data.user.id,
+    name: data.user.name,
+    email: data.user.email,
+    role: data.role   // 👈 AQUÍ USAMOS EL ROLE CORRECTO
+  })
+);
 
-      if (!resp.ok) {
-        // fallo → suma intento y calcula bloqueo
-        const newFails = failCount + 1;
-        setFailCount(newFails);
-        localStorage.setItem("login_fail_count", String(newFails));
-
-        const ms = nextLockMs(newFails);
-        if (ms > 0) {
-          const until = now() + ms;
-          setLockUntil(until);
-          localStorage.setItem("login_lock_until", String(until));
-          setMsg(
-            data?.message ||
-              `❌ Credenciales inválidas. Reintenta en ${Math.ceil(ms / 1000)}s.`
-          );
-        } else {
-          setMsg(data?.message || "❌ Usuario o contraseña incorrectos.");
-        }
-        resetCaptcha();
-        return;
-      }
-
-      // éxito
-      localStorage.removeItem("login_fail_count");
-      localStorage.removeItem("login_lock_until");
-      setFailCount(0);
-      setLockUntil(0);
-
-      window.dispatchEvent(
-        new CustomEvent("auth:changed", { detail: { authed: true } })
-      );
-      setSuccess(true);
-      setMsg("");
-
-      // Redireccion antigua a la carpeta "CHAT"
-
-      // if ((data as any)?.ok && (data as any)?.redirect) {
-      //   setTimeout(() => {
-      //     window.location.href = (data as any).redirect as string; // SSO Flask
-      //   }, 900);
-      //   return;
-      // }
-
-      setTimeout(() => {
-        // Antes "/"
-        navigate("/documents", { replace: true });
-      }, 900);
-    } catch {
-      setMsg("❌ Error al conectar con el servidor.");
-    } finally {
-      setBusy(false);
+localStorage.setItem("userRole", data.role); // 👈 ESTE ES EL ROLE REAL
+localStorage.setItem("userId", String(data.user.id));
+    } else {
+      console.warn("⚠️ El backend NO envió user");
     }
+
+    // limpiar bloqueos
+    localStorage.removeItem("login_fail_count");
+    localStorage.removeItem("login_lock_until");
+    setFailCount(0);
+    setLockUntil(0);
+
+    window.dispatchEvent(
+      new CustomEvent("auth:changed", { detail: { authed: true } })
+    );
+
+    setSuccess(true);
+
+    setTimeout(() => {
+      navigate("/documents", { replace: true });
+    }, 900);
+  } catch {
+    setMsg("❌ Error al conectar con el servidor.");
+  } finally {
+    setBusy(false);
   }
+}
 
   return (
     <main className="login-container">

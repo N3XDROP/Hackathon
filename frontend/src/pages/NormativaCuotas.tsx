@@ -7,7 +7,6 @@ import {
   ChevronDown,
   EyeOff,
   FileDown,
-  ExternalLink,
   Receipt,
 } from "lucide-react";
 import PdfViewer from "../components/PdfViewer";

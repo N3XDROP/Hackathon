@@ -1,4 +1,4 @@
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { branding } from "../config/branding";
 import Logo from "./Logo";
@@ -7,7 +7,9 @@ import styles from "./Navbar.module.css";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Detecta tema inicial y lo aplica inmediatamente en <html>
   useEffect(() => {
@@ -45,6 +47,40 @@ export default function Navbar() {
     mediaQuery.removeListener(listener);
   };
 }, []);
+
+  // Verificar si hay sesión activa
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    // Escuchar cambios de autenticación
+    const handleAuthChange = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
+    window.addEventListener("auth:changed", handleAuthChange);
+    return () => window.removeEventListener("auth:changed", handleAuthChange);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:4000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
+      setIsLoggedIn(false);
+      navigate("/");
+      window.dispatchEvent(
+        new CustomEvent("auth:changed", { detail: { authed: false } })
+      );
+    }
+  };
 
   // Persiste cambios de tema en localStorage y HTML
   useEffect(() => {
@@ -97,12 +133,29 @@ export default function Navbar() {
               <NavItem key={item.to} to={item.to} label={item.label} />
             ))}
 
-            <Link to="/login" className={styles.loginButton}>
-              Ingresar
-            </Link>
-              <Link to="/register" className={styles.loginButton}>
-             Registrarse
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link to="/login" className={styles.loginButton}>
+                  Ingresar
+                </Link>
+                <Link to="/register" className={styles.loginButton}>
+                  Registrarse
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/documents" className={styles.loginButton}>
+                  Panel
+                </Link>
+                <button 
+                  onClick={handleLogout} 
+                  className={styles.loginButton}
+                  style={{ background: "#d32f2f", cursor: "pointer" }}
+                >
+                  Cerrar Sesión
+                </button>
+              </>
+            )}
 
             {/* Botón Dark/Light */}
             <button
@@ -168,13 +221,44 @@ export default function Navbar() {
                 {theme === "dark" ? "☀️ " : "🌙 "}
               </button>
 
-              <Link
-                to="/login"
-                onClick={() => setOpen(false)}
-                className={styles.mobileLogin}
-              >
-                Ingresar
-              </Link>
+              {!isLoggedIn ? (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setOpen(false)}
+                    className={styles.mobileLogin}
+                  >
+                    Ingresar
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setOpen(false)}
+                    className={styles.mobileLogin}
+                  >
+                    Registrarse
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/documents"
+                    onClick={() => setOpen(false)}
+                    className={styles.mobileLogin}
+                  >
+                    Panel
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      handleLogout();
+                    }}
+                    className={styles.mobileLogin}
+                    style={{ background: "#d32f2f", cursor: "pointer" }}
+                  >
+                    Cerrar Sesión
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

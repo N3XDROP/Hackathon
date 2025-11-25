@@ -1,15 +1,23 @@
 import { useState, useEffect } from "react";
 import styles from "./documents.module.css";
 import { useNavigate } from "react-router-dom";
+import { useTokenRefresh } from "../../hooks/useTokenRefresh";
 
-const API_BASE = "http://localhost:4000/api/auth";
+const API_BASE = "http://localhost:4000/api";
+
+interface UserData {
+  id: number;
+  email: string;
+  name: string;
+  role: "0" | "1" | "2" | "usuario" | "admin" | "comite";
+}
 
 export default function Documents() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<"usuario" | "admin" | "comite">("usuario");
+  useTokenRefresh();
 
-  const username = "Usuario Demo";
-  const userId = 1;
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [role, setRole] = useState<"usuario" | "admin" | "comite">("usuario");
 
   const [form, setForm] = useState({
     descripcionEntidad: "",
@@ -31,15 +39,59 @@ export default function Documents() {
     antecedentes_rnmc: null,
   });
 
-  const [mensaje, setMensaje] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoadingDocs, setIsLoadingDocs] = useState(false);
   const [docId, setDocId] = useState<number | null>(null);
   const [documentData, setDocumentData] = useState<any>(null);
   const [documentList, setDocumentList] = useState<any[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [mensaje, setMensaje] = useState("");
 
-  // ===================== FUNCIONES =====================
+  // ----------------- Helpers -----------------
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
 
+  const normalizeRoleName = (r: string | undefined | null) => {
+    if (!r) return "usuario";
+    const rr = String(r).toLowerCase();
+    if (rr === "1" || rr === "admin") return "admin";
+    if (rr === "2" || rr === "comite") return "comite";
+    return "usuario";
+  };
+
+  // ===================== CARGAR DATOS DEL USUARIO =====================
+  useEffect(() => {
+    const loadUserData = () => {
+      try {
+        const userRaw = localStorage.getItem("user");
+        if (!userRaw) {
+          setMensaje("No hay sesión activa. Redirigiendo...");
+          setTimeout(() => navigate("/login"), 1500);
+          return;
+        }
+
+        const user = JSON.parse(userRaw) as UserData;
+
+        console.log("👤 Usuario cargado:", user);
+
+        const finalRole = normalizeRoleName(user.role as string);
+
+        localStorage.setItem("userRole", finalRole);
+
+        setUserData(user);
+        setRole(finalRole as "usuario" | "admin" | "comite");
+      } catch (error) {
+        console.error("Error leyendo user:", error);
+        setMensaje("Error al cargar usuario. Inicia sesión nuevamente.");
+        setTimeout(() => navigate("/login"), 2000);
+      }
+    };
+
+    loadUserData();
+  }, [navigate]);
+
+  // ===================== INPUTS =====================
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -54,18 +106,29 @@ export default function Documents() {
     }
   };
 
-  // -------------------- USUARIO --------------------
+  // ===================== SUBMIT USUARIO =====================
   const handleSubmitAll = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje("");
-    if (loading) return;
+
+    if (isLoadingDocs) return;
+
+    if (!userData) {
+      setMensaje("No se encontró usuario. Inicia sesión de nuevo.");
+      return;
+    }
 
     try {
-      setLoading(true);
-      const createResp = await fetch(`${API_BASE}/create`, {
+      setIsLoadingDocs(true);
+
+      // 🚀 Ruta corregida
+      const createResp = await fetch(`${API_BASE}/documents/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, ...form }),
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ userId: userData.id, ...form }),
       });
 
       const created = await createResp.json();
@@ -75,15 +138,19 @@ export default function Documents() {
       const newDocId = created.document.id;
       setDocId(newDocId);
 
+      // Subir archivos
       for (const key in files) {
         const file = files[key];
         if (!file) continue;
+
         const formData = new FormData();
         formData.append("file", file);
         formData.append("field", key);
 
-        await fetch(`${API_BASE}/upload/${newDocId}`, {
+        // 🚀 Ruta corregida
+        await fetch(`${API_BASE}/documents/upload/${newDocId}`, {
           method: "POST",
+          headers: { ...getAuthHeaders() },
           body: formData,
         });
       }
@@ -94,47 +161,61 @@ export default function Documents() {
       console.error(err);
       setMensaje("❌ Error al subir documentos.");
     } finally {
-      setLoading(false);
+      setIsLoadingDocs(false);
     }
   };
 
-  // -------------------- ADMIN & COMITÉ --------------------
+  // =============== ADMIN & COMITÉ ===============
   const fetchAllDocs = async () => {
     try {
-      const resp = await fetch(`${API_BASE}/all`);
+      const resp = await fetch(`${API_BASE}/documents/all`, {
+        headers: { ...getAuthHeaders() },
+      });
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        console.error("fetchAllDocs error:", err);
+        return;
+      }
+
       const data = await resp.json();
-      if (resp.ok) setDocumentList(data.documents);
-      else setMensaje("No hay documentos disponibles.");
+      setDocumentList(data.documents || []);
     } catch (err) {
       console.error(err);
-      setMensaje("Error al obtener documentos.");
     }
   };
 
   const fetchDocsById = async (id: number) => {
     try {
-      const resp = await fetch(`${API_BASE}/user/${id}`);
+      const resp = await fetch(`${API_BASE}/documents/user/${id}`, {
+        headers: { ...getAuthHeaders() },
+      });
+
+      if (!resp.ok) return;
+
       const data = await resp.json();
-      if (resp.ok && data.documents?.length > 0) {
+
+      if (data.documents?.length > 0) {
         const doc = data.documents[0];
         setDocumentData(doc);
         setDocId(doc.id);
         fetchUploadedFiles(doc.id);
-      } else {
-        setMensaje("No se encontraron documentos.");
       }
     } catch (err) {
       console.error(err);
-      setMensaje("Error al buscar documento.");
     }
   };
 
   const fetchUploadedFiles = async (id: number) => {
     try {
-      const resp = await fetch(`${API_BASE}/files/${id}`);
+      const resp = await fetch(`${API_BASE}/documents/files/${id}`, {
+        headers: { ...getAuthHeaders() },
+      });
+
+      if (!resp.ok) return;
+
       const data = await resp.json();
-      if (resp.ok) setUploadedFiles(data.files || []);
-      else setUploadedFiles([]);
+      setUploadedFiles(data.files || []);
     } catch {
       setUploadedFiles([]);
     }
@@ -142,108 +223,111 @@ export default function Documents() {
 
   const handleAdminUpload = async (field: string) => {
     if (!docId || !files[field]) return;
+
     const formData = new FormData();
     formData.append("file", files[field]!);
     formData.append("field", field);
 
-    const resp = await fetch(`${API_BASE}/admin/upload/${docId}`, {
+    const resp = await fetch(`${API_BASE}/documents/admin/upload/${docId}`, {
       method: "POST",
+      headers: { ...getAuthHeaders() },
       body: formData,
     });
 
-    const data = await resp.json();
-    if (resp.ok) {
-      setMensaje("✅ Archivo actualizado.");
-      fetchUploadedFiles(docId);
-    } else {
-      setMensaje(data.message);
-    }
+    if (!resp.ok) return;
+
+    fetchUploadedFiles(docId);
   };
 
   const handleAdminDelete = async (field: string) => {
     if (!docId) return;
-    const resp = await fetch(`${API_BASE}/admin/delete/${docId}`, {
+
+    const resp = await fetch(`${API_BASE}/documents/admin/delete/${docId}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify({ field }),
     });
-    const data = await resp.json();
-    if (resp.ok) {
-      setMensaje("🗑️ Archivo eliminado.");
-      fetchUploadedFiles(docId);
-    } else setMensaje(data.message);
+
+    if (!resp.ok) return;
+
+    fetchUploadedFiles(docId);
   };
 
   const handleStatusChange = async (status: "aprobado" | "rechazado") => {
     if (!docId) return;
-    const resp = await fetch(`${API_BASE}/status/${docId}`, {
+
+    const resp = await fetch(`${API_BASE}/documents/status/${docId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify({ status }),
     });
-    const data = await resp.json();
-    if (resp.ok) {
-      setMensaje(`📘 Estado actualizado a ${status}.`);
-      fetchAllDocs();
-    } else setMensaje(data.message);
+
+    if (!resp.ok) return;
+
+    fetchAllDocs();
   };
 
   useEffect(() => {
+    console.log("📊 useEffect ejecutado — rol:", role);
     if (role !== "usuario") fetchAllDocs();
   }, [role]);
 
-  // ===================== RENDER =====================
+  // ================= RENDER =================
   return (
     <main className={styles.container}>
       <section className={styles.card}>
         <header className={styles.header}>
           <h1 className={styles.title}>Panel de Documentos</h1>
           <p className={styles.subtitle}>
-            Bienvenido, <strong>{username}</strong>
+            Bienvenido, <strong>{userData?.name}</strong>
           </p>
 
           <div className={styles.roleSelect}>
-            <label>Cambiar rol:</label>
-            <select
-              value={role}
-              onChange={(e) => {
-                setDocumentData(null);
-                setRole(e.target.value as any);
-              }}
-            >
-              <option value="usuario">Usuario</option>
-              <option value="admin">Administrador</option>
-              <option value="comite">Comité</option>
-            </select>
+            <label>
+              Rol:{" "}
+              <strong>
+                {role === "admin"
+                  ? "Administrador"
+                  : role === "comite"
+                  ? "Comité"
+                  : "Usuario"}
+              </strong>
+            </label>
           </div>
         </header>
 
-        {/* ==================== USUARIO ==================== */}
+        {/* ================= USUARIO ================= */}
         {role === "usuario" && (
           <form className={styles.form} onSubmit={handleSubmitAll}>
             <div className={styles.section}>
               <h2>Información de la Entidad</h2>
-              {Object.entries(form).map(([key, val]) => (
-                <div className={styles.formGroup} key={key}>
-                  <label>{key.replaceAll("_", " ")}:</label>
-                  <input name={key} value={val} onChange={handleChange} />
+              {Object.entries(form).map(([k, v]) => (
+                <div className={styles.formGroup} key={k}>
+                  <label>{k.replaceAll("_", " ")}:</label>
+                  <input name={k} value={v} onChange={handleChange} />
                 </div>
               ))}
             </div>
 
             <div className={styles.section}>
               <h2>Documentos Requeridos</h2>
-              {Object.keys(files).map((key) => (
-                <div className={styles.formGroup} key={key}>
-                  <label>{key.replaceAll("_", " ")}:</label>
-                  <input type="file" name={key} onChange={handleFileChange} />
+              {Object.keys(files).map((k) => (
+                <div className={styles.formGroup} key={k}>
+                  <label>{k.replaceAll("_", " ")}:</label>
+                  <input type="file" name={k} onChange={handleFileChange} />
                 </div>
               ))}
             </div>
 
             <div className={styles.actions}>
-              <button type="submit" disabled={loading}>
-                {loading ? "Subiendo..." : "🚀 Finalizar"}
+              <button type="submit" disabled={isLoadingDocs}>
+                {isLoadingDocs ? "Subiendo..." : "🚀 Finalizar"}
               </button>
               <button
                 type="button"
@@ -258,11 +342,14 @@ export default function Documents() {
           </form>
         )}
 
-        {/* ==================== ADMIN & COMITÉ ==================== */}
+        {/* ================= ADMIN & COMITÉ — LISTA ================= */}
         {(role === "admin" || role === "comite") && !documentData && (
           <div className={styles.section}>
             <h2>Solicitudes registradas</h2>
-            {documentList.length > 0 ? (
+
+            {documentList.length === 0 ? (
+              <p>No hay solicitudes.</p>
+            ) : (
               <table className={styles.table}>
                 <thead>
                   <tr>
@@ -295,15 +382,14 @@ export default function Documents() {
                   ))}
                 </tbody>
               </table>
-            ) : (
-              <p>No hay solicitudes.</p>
             )}
           </div>
         )}
 
+        {/* ================= ADMIN & COMITÉ — DETALLE ================= */}
         {(role === "admin" || role === "comite") && documentData && (
           <div className={styles.section}>
-            <h2>Detalles de la solicitud #{documentData.id}</h2>
+            <h2>Solicitud #{documentData.id}</h2>
 
             <p>
               <strong>Descripción:</strong> {documentData.descripcionEntidad}
@@ -327,6 +413,7 @@ export default function Documents() {
             <h3>Archivos</h3>
             {Object.keys(files).map((key) => {
               const subido = uploadedFiles.some((f) => f.startsWith(key));
+
               return (
                 <div
                   className={`${styles.formGroup} ${
@@ -336,13 +423,14 @@ export default function Documents() {
                 >
                   <label>
                     {subido ? "🟩 " : "🟥 "}
-                    {key.replaceAll("_", " ")}:
+                    {key.replaceAll("_", " ")}
                   </label>
+
                   <div className={styles.actions}>
                     <button
                       onClick={() =>
                         window.open(
-                          `${API_BASE}/files/${documentData.id}/${key}`
+                          `${API_BASE}/documents/files/${documentData.id}/${key}`
                         )
                       }
                       disabled={!subido}
@@ -352,11 +440,7 @@ export default function Documents() {
 
                     {role === "admin" && (
                       <>
-                        <input
-                          type="file"
-                          name={key}
-                          onChange={handleFileChange}
-                        />
+                        <input type="file" name={key} onChange={handleFileChange} />
                         <button onClick={() => handleAdminUpload(key)}>
                           Actualizar
                         </button>
@@ -383,9 +467,12 @@ export default function Documents() {
 
             <button
               style={{ marginTop: "1rem" }}
-              onClick={() => setDocumentData(null)}
+              onClick={() => {
+                setDocumentData(null);
+                setUploadedFiles([]);
+              }}
             >
-              ← Volver a la lista
+              ← Volver
             </button>
           </div>
         )}
