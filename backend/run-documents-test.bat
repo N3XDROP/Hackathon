@@ -14,11 +14,11 @@ rem 1–3: registro, login, creación con Hurl y volcado de capturas
 hurl --verbose --variable host=%HOST% --variable ts=%TS% --variable email=%EMAIL% ^
   --to-entry 3 --json tests\documents_e2e.hurl > captures.json
 
-rem Parsear capturas con Node (ruta absoluta del .bat)
+rem Parsear capturas con Node
 for /f "usebackq tokens=1* delims==" %%a in (`node "%~dp0parseCaptures.js"`) do set "%%a=%%b"
 
 echo DOC_ID=%DOC_ID%
-echo SESSION_COOKIE=%SESSION_COOKIE%
+echo SESSION_TOKEN=%SESSION_TOKEN%
 
 rem Validaciones antes de subir
 if "%DOC_ID%"=="" (
@@ -26,28 +26,28 @@ if "%DOC_ID%"=="" (
   type captures.json
   goto end_fail
 )
-if "%SESSION_COOKIE%"=="" (
-  echo [ERROR] SESSION_COOKIE vacio. Revisa captures.json y parseCaptures.js
+if "%SESSION_TOKEN%"=="" (
+  echo [ERROR] SESSION_TOKEN vacio. Revisa captures.json y parseCaptures.js
   type captures.json
   goto end_fail
 )
 
 echo Subiendo RUT con curl.exe...
 curl.exe -X POST %HOST%/api/documents/upload/%DOC_ID% ^
-  -H "Cookie: %SESSION_COOKIE%" ^
+  -H "Authorization: Bearer %SESSION_TOKEN%" ^
   -F "field=rut" ^
   -F "file=@tests/files/rut.pdf;type=application/pdf"
 
 echo Subiendo CEDULA con curl.exe...
 curl.exe -X POST %HOST%/api/documents/upload/%DOC_ID% ^
-  -H "Cookie: %SESSION_COOKIE%" ^
+  -H "Authorization: Bearer %SESSION_TOKEN%" ^
   -F "field=cedula" ^
   -F "file=@tests/files/cedula.pdf;type=application/pdf"
 
 rem 4–5: listado y estado aprobado
 hurl --verbose ^
   --variable host=%HOST% --variable ts=%TS% --variable email=%EMAIL% ^
-  --variable doc_id=%DOC_ID% --variable session_cookie=%SESSION_COOKIE% ^
+  --variable doc_id=%DOC_ID% --variable session_token=%SESSION_TOKEN% ^
   tests\documents_e2e.hurl --from-entry 4 --to-entry 5
 
 if %errorlevel%==0 (

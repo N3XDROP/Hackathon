@@ -1,6 +1,14 @@
 # Hackathon – Backend + Frontend + Chat (IA + OCR)
 
-## 1. 🌐 URL de la aplicación
+## 1. 👥 Integrantes del equipo
+
+- Vanesa Alexandra Amaya Bohorquez
+- Laura Yulieth López Albino
+- Maria Camila Lopez Bernal
+- Julian Felipe Peralta Becerra
+- Jose Luis Torres Rivera
+
+## 2. 🌐 URL de la aplicación
 El proyecto se ejecuta en entorno local:
 
 - Backend → [http://localhost:4000](http://localhost:4000)
@@ -10,7 +18,7 @@ El proyecto se ejecuta en entorno local:
 
 ---
 
-## 2. 📖 Descripción del proyecto
+## 3. 📖 Descripción del proyecto
 Aplicación web que integra:
 - **Backend** con Node.js, Express y PostgreSQL para gestión de usuarios y documentos.  
 - **Frontend** con React/Vite para la interfaz de usuario.  
@@ -23,7 +31,7 @@ Aplicación web que integra:
 
 ---
 
-## 3. 📂 Estructura del proyecto
+## 4. 📂 Estructura del proyecto
 
 ```bash
 ├── backend/                  # API Node/Express + TypeORM
@@ -91,7 +99,7 @@ Aplicación web que integra:
 
 ---
 
-## 4. 📁 Explicación de carpetas
+## 5. 📁 Explicación de carpetas
 
 Perfecto Laura 🙌, aquí te dejo la sección de **explicación de carpetas** ya embellecida en **Markdown**, con íconos y formato jerárquico para que quede profesional y fácil de leer en tu README:
 
@@ -148,7 +156,7 @@ Perfecto Laura 🙌, aquí te dejo la sección de **explicación de carpetas** y
 - 
 ---
 
-## 5. ⚙️ Configuración y entorno
+## 6. ⚙️ Configuración y entorno
 - **Base de datos local:** PostgreSQL en puerto 5432.  
 - **Alternancia de DB:**  
   ```bash
@@ -159,7 +167,7 @@ Perfecto Laura 🙌, aquí te dejo la sección de **explicación de carpetas** y
 
 ---
 
-## 6. 🚀 Cómo ejecutar el proyecto
+## 7. 🚀 Cómo ejecutar el proyecto
 1. Clona el repositorio.  
 2. Instala dependencias en cada carpeta:  
    ```bash
@@ -180,7 +188,7 @@ Perfecto Laura 🙌, aquí te dejo la sección de **explicación de carpetas** y
 
 ---
 
-## 7. 🔗 Endpoints disponibles
+## 8. 🔗 Endpoints disponibles
 
 | Feature              | Route                          | Method | Description                         |
 |----------------------|--------------------------------|--------|-------------------------------------|
@@ -194,29 +202,33 @@ Perfecto Laura 🙌, aquí te dejo la sección de **explicación de carpetas** y
 
 ---
 
-## 8. 🧪 Pruebas E2E
+## 9. 🧪 Pruebas E2E
 Se incluyen pruebas de punta a punta con **Hurl**:
 
 - **Auth E2E:**  
   ```bash
   cd backend
-  run-auth-test.bat
+  ./run-auth-test.bat   
   ```
   Valida registro, login y errores.
 
 - **Documentos E2E:**  
   ```bash
   cd backend
-  run-documents-test.bat
+  ./run-documents-test.bat
   ```
   Valida creación de documento, subida de archivos, listado y actualización de estado.
 
 ---
 
-## 9. 🏗️ Arquitectura del proyecto
+## 10. 🏗️ Arquitectura del proyecto
 El sistema sigue una arquitectura **modular**:
 - **Backend:** patrón MVC con servicios y entidades en TypeORM.  
 - **Frontend:** componentes React + hooks para estado global.  
 - **Chat:** microservicio Flask con integración OCR/IA.  
 
-*(Aquí puedes adjuntar un diagrama UML de clases o módulos, mostrando cómo interactúan usuarios, documentos y chat.)*
+![Diagrama de Flujo General](<Flujo general de ingreso al Clúster SumerTic (2).png>)
+
+![Diagrama de sistema](<Diagrama de sistema clúster.png>)
+
+![Diagrama de Flujo de Programa](DiagFujoDePrograma.png)

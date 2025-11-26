@@ -13,19 +13,19 @@ HTTP 200
 [Captures]
 user_id: jsonpath "$.id"
 
-# 2) LOGIN PARA CAPTURAR COOKIE
-POST {{host}}/login
+# 2) LOGIN PARA CAPTURAR TOKEN
+POST {{host}}/api/auth/login
 {
   "email": "{{email}}",
   "password": "12345678"
 }
 HTTP 200
 [Captures]
-session_cookie: header "Set-Cookie"
+session_token: jsonpath "$.token"
 
 # 3) CREACIÓN DE DOCUMENTO
 POST {{host}}/api/documents/create
-Cookie: {{session_cookie}}
+Authorization: Bearer {{session_token}}
 {
   "userId": {{ user_id }},
   "descripcionEntidad": "Empresa de prueba",
@@ -40,12 +40,12 @@ doc_id: jsonpath "$.document.id"
 
 # 6) LISTAR ARCHIVOS
 GET {{host}}/api/documents/files/{{ doc_id }}
-Cookie: {{session_cookie}}
+Authorization: Bearer {{session_token}}
 HTTP 200
 
 # 7) ACTUALIZAR ESTADO (APROBADO)
 PUT {{host}}/api/documents/status/{{ doc_id }}
-Cookie: {{session_cookie}}
+Authorization: Bearer {{session_token}}
 {
   "status": "aprobado"
 }
