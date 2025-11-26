@@ -1,15 +1,12 @@
-
-version: "3.9"
-
 services:
   backend:
     build: ./backend
     ports:
       - "4000:4000"
     env_file:
-      - ./backend/.env   # 👈 aquí le decimos dónde está el .env real
+      - ./backend/.env
     depends_on:
-      - chat             # 👈 elimina si no existe “chat” o si no depende de nadie
+      - chat
     restart: always
 
   frontend:
