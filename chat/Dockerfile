@@ -1,18 +1,11 @@
-# Imagen base con Python
-FROM python:3.12-slim
+FROM python:3.10
 
-# Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiamos las dependencias
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copiamos el código
 COPY . .
 
-# Puerto que va a usar el contenedor
-EXPOSE 8000
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Comando que ejecuta el bot
+EXPOSE 5000
+
 CMD ["python", "app.py"]
